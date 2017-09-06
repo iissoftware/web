@@ -1,0 +1,114 @@
+字符串模板：
+	let str = 'es6字符串模板';
+	1.字符串查找。str.includes('es6') 	//true
+	2.字符串开始位置是否有该字符。str.startsWith('55');//false  	str.startsWith('es')//true
+	3.字符串结束位置是否有该字符。str.endsWith('55')//false			str.endsWith('模板')//true
+	4.字符串拼接。let text = `你好，这是${str}`;	//你好，这是es6字符串模板
+	5.字符串复制。console.log(str.repeat(2)) //es6字符串模板es6字符串模板
+
+数字判断与验证：
+	1.判断是否是数字。包括整数，浮点数都返回trueNumber.isFinite()
+		console.log(Number.isFinite(123))	//true
+		console.log(Number.isFinite(1.2))	//true
+		console.log(Number.isFinite('1.2'))	//false
+		console.log(Number.isFinite(null))	//false
+		console.log(Number.isFinite(undefinded))	//false
+	2.判断是否是NaN->Number.isNaN()
+		console.log(Number.isNaN(NaN));	//true
+	3.判断是否是整数。Number.isInteger()
+		console.log(Number.isInteger(123.1)); //false
+		console.log(Number.isInteger(123)); //true
+	4.整数转换。Number.parseInt(1.88)
+		console.log(Number.parseInt(1.88));	//1
+	5.浮点数转换。Number.parseFloat()
+		console.log(Number.parseFloat(12));	//12
+
+新增数组操作：
+	1.json格式转化：
+		let json = {
+			'0': 'youzhining',
+			'1': 25,
+			'2': '男',
+			length: 3
+		}
+		console.log(Array.from(json));		//['youzhining',25,'男']
+	2.Array.of()：负责将一堆文本或者字符串转化成数组。
+		console.log(Array.of('你好吗','iis','嗯咯咯')) //["你好吗", "iis", "嗯咯咯"]
+	3.find()方法：从数组中查找。如果找到符合条件就返回，结束查找。有三个参数
+		value: 	当前查找的值
+		index:	当前查找的值的索引
+		arr:	当前数组
+		let arr = [1,2,3,4,5,6,8];
+		console.log(arr.find(function(value,index,arr){
+			return value > 6
+		})) //8
+	4.fill()方法：填充数组。有三个参数：
+		value: 要填充的值
+		startIndex: 填充的开始索引
+		endIndex: 填充的结束索引
+		let arr = [1,2,3,4,5,6,8];
+		arr.fill('iis',2,5);
+		console.log(arr); //[1,2,'iis','iis','iis',6,8]
+	5.for...of：数组的遍历。遍历数组中的每一项。
+		let arr = ['iis','you','zhi','ning']
+		for(let val of arr){
+			console.log(val);	//iis you zhi ning
+		}
+		得到数组索引：
+		let arr = ['iis','you','zhi','ning']
+		for(let index of arr.keys()){
+			console.log(index);	//0 1 2 3
+		}
+		同时得到数组内容及索引
+		let arr = ['iis','you','zhi','ning']
+		for(let [index,val] of arr.entries()){
+			console.log(index,val);	//0->iis, 1->you, 2->zhi, 3->ning
+		}
+
+箭头函数：
+	1. var add = (a,b) => a + b;  等价于：
+		function add(a,b){
+			return a + b;
+		}
+	2.如果函数体内多有条语句
+		var add = (a,b) => {
+			console.log('多条语句使用花括号')
+			return a + b;
+		}
+
+数组遍历：forEach  filter  some  map
+	1.forEach：遍历数组每个元素，并自动过滤数组中的空元素
+	var arr = ['h','e','l','l','o'];
+	arr.forEach((index,value)=>console.log(value,index))	//0->'h' 1->'e' 2->'l' 3->'l' 4->'o'
+
+对象合并：assign(obj1,obj2)
+	var obj1 = {name: 'youzhining'}
+	var obj2 = {enname: 'iissoftware'}
+	var obj3 = assign(obj1,obj2);		//{name: 'youzhining', enname: 'iissoftware'}
+
+Symbol：Symbol为js新增的原始数据类型。目前js一共有其中数据类型：Number String Boolean Null Object Undefined Symbol
+	symbol的作用就是创建一个全局独一无二的值。
+
+
+Set数据结构：set是一个js新增的数据结构，不是数据类型，它以数组的形式创建，但并非数组。具备增删查方法(add,delete,has)。
+	1）	var set = new Set(['iissoftware','前端工程师']);
+		console.log(set);		//{'iissoftware','前端工程师'}
+	2）	var set = new Set(['iissoftware','前端工程师']);
+		set.add('youzhining');
+		console.log(set);	//{'iissoftware','前端工程师','youzhining'}
+	3）	var set = new Set(['iissoftware','前端工程师']);
+		set.delete('前端工程师');
+		console.log(set);	//{'iissoftware'}
+	4）	var set = new Set(['iissoftware','前端工程师']);
+		console.log(set.has('iissoftware'));	//true
+	5）	Set的遍历：for...of..   forEach()
+		let setArr = new Set(['params1','params2','params3']);
+		for(let item of setArr){
+			console.log(item);		//params1 params2 params3
+		}
+		setArr.forEach((value)=>console.log(value))		//params1 params2 params3
+		console.log(setArr.size)	//得到set数据长度
+
+
+
+
