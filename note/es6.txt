@@ -109,6 +109,8 @@ Set数据结构：set是一个js新增的数据结构，不是数据类型，它
 		setArr.forEach((value)=>console.log(value))		//params1 params2 params3
 		console.log(setArr.size)	//得到set数据长度
 
+Proxy代理：
+
 
 
 
