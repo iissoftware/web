@@ -109,6 +109,70 @@ Set数据结构：set是一个js新增的数据结构，不是数据类型，它
 		setArr.forEach((value)=>console.log(value))		//params1 params2 params3
 		console.log(setArr.size)	//得到set数据长度
 
+Object.defineProperty(obj,'attr',{})：有三个参数：
+	第一个参数：目标对象
+	第二个参数：目标对象需要定义的属性名或者方法名
+	第三个参数：目标属性所拥有的特性（descriptor）
+		在目标属性的特性中，有几个值：
+			value：属性的值
+			writable：属性的值是否可以被重写，默认为false,不可重写
+			configurable：总开关。一旦为false,就不能再设置其它(value,writable,configurable)
+			enumerable：属性attr是否能在for...in循环中遍历出来或者在Object.keys(obj)中枚举出来
+			get：在获取属性值的时候被调用。
+			set：在设置属性值的时候被调用。
+			例子：
+			var obj = {};
+			Object.defineProperty(obj,'attr',{
+				value: 'iissoftware'
+			});
+			console.log(obj.attr);		//iissoftware
+
+			//总开关configurable: false后不能再设置其它的
+			var obj = {};
+			Object.defineProperty(obj,'attr',{
+				configurable: false
+			})
+			Object.defineProperty(obj,'attr',{
+				configurable: true
+			})
+			//error: Uncaught TypeError: Cannot redefine property: attr
+
+			//writable为false后只能读，不能重写属性值
+			var obj = {};
+			Object.defineProperty(obj,'attr',{
+				value: 'iissoftware',
+				writable: false
+			});
+			console.log(obj.attr);	//iissoftware
+			obj.attr = 'youzhining';
+			console.log(obj.attr);	//iissoftware  如果writable: true,那么将会输出youzhining。所以writable为false后不能再设置属性值，只能读
+
+			//enumerable为false后属性值不能使用for...in遍历或者Object.keys()枚举
+			var obj = {};
+			Object.definePropert(obj,'attr',{
+				value: 'iissoftware',
+				enumerable: false
+			});
+			console.log(Object.keys(obj))	//[] 如果enumerable: true，将输出['attr']
+
+			//get：属性值被获取时被调用。
+			var obj = {};
+			Object.defineProperty(obj,'attr',{
+				get(){
+					console.log('属性值被获取时调用');
+				}
+			});
+			obj.attr	//属性值被获取时调用
+
+			//set：属性值被重写时被调用。
+			var obj = {};
+			Object.defineProperty(obj,'attr',{
+				set(val){
+					console.log('属性值被重写时调用 ' + val);
+				}
+			});
+			obj.attr = 'hello world!';	//属性值被重写时调用 hello world!
+
 Proxy代理：
 
 
