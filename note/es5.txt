@@ -1,0 +1,8 @@
+function getStyle(obj,attr){
+	if(obj.currentStyle){ //ie
+		return obj.currentStyle[attr];
+	}else{
+		//非ie
+		return obj.getComputedStyle(obj,false)[attr];
+	}
+}

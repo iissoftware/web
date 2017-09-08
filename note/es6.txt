@@ -108,6 +108,31 @@ Set数据结构：set是一个js新增的数据结构，不是数据类型，它
 		}
 		setArr.forEach((value)=>console.log(value))		//params1 params2 params3
 		console.log(setArr.size)	//得到set数据长度
+	6）	Array.from可以将Set转化成数组：
+		let s = new Set([1,2,3,4,5]);
+		let item = Array.from(s);
+		console.log(item);	//[1, 2, 3, 4, 5]
+		利用Array.from对数组去除重复
+			function quchongfu(arr){
+				return Array.from(new Set(arr))
+			}
+			console.log(quchongfu([1,2,4,4,8,6,8]));	//[1,2,4,8,6]
+	7）	Set实例有四个遍历的方法：
+		keys(): 返回键名的遍历器
+		values(): 返回键值的遍历器
+		entries()：返回键值对的遍历器
+		forEach()：使用回调函数遍历每个成员
+
+		let set = new Set(['red','blue','yellow']);
+		for(let item of set.keys()){
+			console.log(item);	//red blue yellow
+		}
+		for(let item of set.values()){
+			console.log(item);	//red blue yellow
+		}
+		for(let item of set.entries()){
+			console.log(item);	//["red","red"] ["blue","blue"] ["yellow","yellow"]
+		}
 
 Object.defineProperty(obj,'attr',{})：有三个参数：
 	第一个参数：目标对象
