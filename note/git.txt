@@ -52,6 +52,44 @@ git reset命令既可以回退版本，也可以把暂存区的修改回退到�
 
 //git 创建、删除、切换本地分支
 
-git checkout -b dev    ==>  建立一个新的本地分支dev
+git branch dev  ==> 新建一个dev分支，但不切换到其它分支
+git checkout -b dev    ==>  建立一个新的本地分支dev并切换到dev分支
 git checkout dev       ==>  切换到本地dev分支
 git branch -d dev      ==>  删除本地dev分支
+
+git branch   ==> 查看本地所有分支
+git branch -r   ==> 查看远程所有分支(r是remote的简写，表示远程的)
+git branch -a  ==>查看所有的分支(本地分支 + 远程分支)
+git branch --all  ==> 查看所有分支。
+git push origin master  ==> 将文件推到远程仓库master分支上
+git push -u origin master -f  ==> 将文件强制推到远程仓库中。一般是不可取的，因为这样会使远程修改丢失，尤其是多人开发的时候。
+git remote show  ==> 查看远程库 默认是origin
+git clone git@github.com:iissoftware/web.git   ==> 从服务器上将代码给拉下来
+git config --list  ==> 查看所有用户
+git ls-files  ==> 查看已经添加到暂存区的文件
+git ls-files -s  ==> 查看已经添加到暂存区的文件
+git diff --cached ==> 查看暂存区文件
+git diff --staged ==> 查看暂存区文件
+git rm --cached <file>  ==> 仅仅删除暂存区文件，不会影响到工作区
+git rm -f <file>  ==> 删除暂存区和工作区的文件
+rm <file> ==> 删除工作区的文件
+
+git push origin -d dev   ==>  删除远程dev分支
+git merge dev  ==>  在本地master分支下，将本地分支dev合并到master分支上。
+
+
+
+
+git status的一些状态命令：
+
+git status  ===> 输出详细的内容，但看起来有点繁琐.
+git status -s(--short)  ===>  输出简短型状态信息。有几种状态标记。
+   ?? ==> 表示新添加的未跟踪文件。
+   A  ==> 表示新添加到暂存区中的文件。A是add的缩写。
+   M  ==> 表示修改过的文件但还是添加到暂存区。M是modify的缩写。
+   D  ==> 表示已经删除的文件。它自身又有两种颜色的D标识。如果D是红色的，表示仅仅删除工作区中的文件。如果D是绿色的，表示仅仅删除暂存区中的文件。
+
+
+
+配置你需要的编辑器：
+ git config --global core.editor     ==> 将core.editor编辑器设置为git 默认打开的编辑器。
