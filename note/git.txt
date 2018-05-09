@@ -93,3 +93,20 @@ git status -s(--short)  ===>  输出简短型状态信息。有几种状态标�
 
 配置你需要的编辑器：
  git config --global core.editor     ==> 将core.editor编辑器设置为git 默认打开的编辑器。
+
+
+git更新远程仓库代码到本地流程：
+1、git remote -v  === 查看远程仓库(我这里有一个origin仓库)
+
+2、从远程获取最新版本到本地
+   git fetch origin master:temp   （temp为本地分支）
+
+3、比较本地仓库与下载的temp分支
+   git diff temp
+
+4、合并temp分支到本地的master分支
+   git merge temp
+
+5、删除temp分支
+   git branch -d temp
+
