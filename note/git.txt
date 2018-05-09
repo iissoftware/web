@@ -110,3 +110,10 @@ git更新远程仓库代码到本地流程：
 5、删除temp分支
    git branch -d temp
 
+
+cnpm与webpack 命令找不到解决办法：
+   1、where node       ===>  先查看node安装的路径
+   2、npm config ls    ===>  查看npm配置信息，此时看到一个prefix属性，它表明npm包安装的默认路径。
+   3、npm config set prefix "你的包安装路径"
+将cnpm文件和cnpm.cmd放入与npm文件npm.cmd同一个目录路径下即可，然后将cnpm目录包放入与npm.cmd同一目录下的node_modules目录下即可。
+将webpack文件和webpack.cmd放入与npm文件npm.cmd同一个目录路径下即可，然后将webpack目录包放入与npm.cmd同一目录下的node_modules目录下即可。
