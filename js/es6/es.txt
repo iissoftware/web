@@ -1,0 +1,128 @@
+一、解构赋值：
+    数组解构赋值(按次序位置取值,与顺序有关)
+        let [a,[b],c] = [1,[8],6]   ==> a = 1,b = 8,c = 6
+        let [x=5,y] = [2]  ==> x = 2,y = undefined
+        let [x,...y] = [1,2,3,4]  ==>  x = 1,y = [2,3,4]
+        let [x,...y] = [1,,,,4]  ==> x = 1,y = [undefined,undefined,undefined,4]
+
+    对象解构赋值(变量必须与属性同名才能取到值，跟顺序无关)
+        let {foo,bar} = {foo: 'iissoftware',bar: 'male'}  ==> foo = 'iissoftware',bar = 'male'
+        let {foo: foo,bar: bar} = {foo: 'iissoftware',bar: 'male'}  ==> foo = 'iissoftware',bar = 'male'
+        当属性名和属性值同名时，可以简写。其实第一种是第二种的简写。属性值才是变量。
+        let {x=5,y} = {}  ==> x = 5,y = undefined
+        let {x:y = 10} = {}  ==> y = 10
+        let {x:y = 10} = {x: 'iissoftware'}  ==> y = 'iissoftware'
+        let {x = 6} = {x: undefined}  ==> x = 6
+
+    字符串解构赋值(字符串被转换成类似数组的对象,具有长度length)
+        let [x,y,z,k] = 'yes'  ==> x = 'y',y = 'e',z = 's',k = undefined
+        let {length: len} = 'hello'  ==> len = 5
+
+    数值和布尔值的解构赋值：
+        如果等号右边是数值和布尔值，则会先转化为该值所对应的包装对象
+        let {toString: x} = 123  ==>  x === Number.prototype.toString   //true
+        let {toString: x} = true  ==>  x === Boolean.prototype.toString   //true
+
+    函数的参数也可以解构赋值：
+        function fn([x,y]){
+            return x + y;    //5
+        }
+        fn([2,3])
+
+
+二、字符串扩展：
+
+    1、增加了 for..of 遍历器接口
+        var str = 'hello';
+        var arr = ['red','green','blue'];
+        for(let i in str){
+            console.log(str[i])    //h e l l o
+        }
+        for(let i in arr){
+            console.log(arr[i])    //red green blue
+        }
+
+    2、增加了startsWith() & endsWith() & includes() 方法。都返回布尔值
+        startsWith('x')： 参数字符串x是否在原字符串的开始位置。
+        endsWith('x')  ： 参数字符串x是否在原字符串的结束位置。
+        includes('x')  ： 返回x是否在原字符串中。跟indexOf()差不多，只不过indexOf()返回的是索引，而includes返回布尔值
+
+        console.log('hello'.startsWith('h'))        //true
+        console.log('hello'.endsWith('o'))          //true
+        console.log('hello'.includes('ell'))        //true
+
+    3、增加了模板字符串(`${变量名}`)
+        var name = 'iissoftware';
+        document.write(`hello!大家好，我是${name}`);  //hello！大家好，我是iissoftware
+
+
+三、函数的扩展：
+    1、函数参数默认值。
+    2、rest参数(...val),用于获取多余的参数
+    3、箭头函数。以下为使用箭头函数需要注意几点。
+        1) 函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象。
+        2) 不可以当做构造函数来使用，也就是说，不可以使用new命令，否则会抛出一个错误。
+        3) 不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用 rest(...val) 参数代替。
+        4) 不可以使用yield命令，因此箭头函数不能用作 Generator 函数。
+        针对 1) 小点，箭头函数本身没有自己的this，其内部的this是使用外层代码块的this;
+            ES6:
+            function foo(){
+                setTimeout(() => {
+                    console.log(this.id)        //this 
+                },100);
+            }
+                    转化成ES5后：
+            ES5：
+            function foo(){
+                var _this = this;
+                setTimeout(function(){
+                    console.log(_this.id)
+                });
+            }
+
+
+四、数组的扩展：
+    1、扩展运算符(...)，将一个数组转为用逗号分隔的参数序列。
+        console.log(...[1,2,3])    //1 2 3
+        var arr = [];
+        function push(arr,...item){
+            console.log(item) // [4,5,6]
+            arr.push(...item);
+        }
+        push(arr,4,5,6);
+        console.log(arr)    // [4,5,6]
+
+        合并数组：
+            var y = [2,3,4,5];
+            var x = [1,...y,6];
+            console.log(x)   // 1 2 3 4 5 6
+
+    2、增加了Array.from()方法： 用于将两类对象转化为真正的数组。一类是类数组，一类是可遍历的对象。
+        兼容性：IE12以下不兼容
+        下面是一个类数组对象，使用Array.from()方法将其转为真正的数组。
+            var arrayLike = {
+                0 : 'red',
+                1 : 'green',
+                2 : 'blue',
+                length: 3
+            }
+            console.log(Array.from(arrayLike)) // ['red','green','blue']
+
+
+五、对象的扩展：
+    1、属相的简洁表示法。当属性名和属性值同名时，es6允许只写属性名。简写的属性名总是字符串。
+        var foo = 'iissoftware';
+        var baz = {foo: foo}  ==>  var baz = {foo}
+
+    2、方法的简写。
+        ES5:
+        var obj = {
+            show: function(){...}
+        }
+
+        ES6:
+        var obj = {
+            show() {...}
+        }
+
+    3、增加Object.assign()方法。用于对象的合并，将源对象（source）的所有可枚举属性，复制到目标对象（target）。
