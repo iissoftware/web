@@ -33,3 +33,36 @@
         序列化就是将对象状态信息转换为可以存储或传输形式的过程。js可通过JSON.stringify(obj)进行序列化。
     什么是反序列化？
         将字符串形式的对象转换为真正的对象形式。js可通过JSON.parse(strObj)
+
+七、JSONP使用
+    什么是JSONP？
+        JSONP是json的一种‘使用模式’，可以让网页从别的域名获取数据，即跨域读取数据。
+    为何从不同的域读取数据需要使用JSONP？
+        因为浏览器的同源策略。
+    什么是同源策略？
+        同源策略，它是由网景(Netscape)提出的一个著名的安全策略，现在所有支持JavaScript 的浏览器都会使用这个策略。
+        $.ajax({
+            url: 'http://www.baidu.com/ajax/jsonp.php',
+            dataType: 'jsonp',
+            type: 'get',
+            jsonp: 'callback',          //请求php的参数名
+            async: true,                //是否异步请求
+            success: function(data){
+                console.log(data);
+            },
+            error: function(){
+
+            }
+        });
+
+        //jsonp.php
+        <?php
+            $data = array(
+                'name' => 'iissoftware',
+                'sex' => 'male',
+                'job' => 'web'
+            );
+            $callback = $_GET['callback'];
+            echo $callback.'('.json_encode($data).')';
+            return;
+        ?>
