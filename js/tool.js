@@ -451,3 +451,15 @@ function rgb(color){
 String.prototype.toCapitalize = function(){
 	return this[0].toUpperCase() + this.substr(1);
 }
+
+/**
+*	检查一个变量数据类型
+*/
+
+function type ( obj ) {
+	var core_toString = {}.toString;
+	if( obj == null ) {
+		return String( obj );
+	}
+	return typeof obj === 'object' || typeof obj === 'function' ? core_toString.call( obj ) || 'object' : typeof obj;
+}

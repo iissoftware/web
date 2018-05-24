@@ -27,3 +27,22 @@ function hasClass(elem,cls){
         return false;
     }
 }
+
+
+/**
+*   通过class查询节点
+*/
+function byClass(cls){
+    var chilren = document.getElementsByTagName('*') || document.all;
+    var arr = [];
+    for(var i = 0;i < chilren.length;i++){
+        var child = chilren[i];
+        var clsName = child.className.split(' ');
+        for(var j = 0;j < clsName.length;j++){
+            if(cls == clsName[j]){
+                arr.push(child);
+            }
+        }
+    }
+    return arr;
+}
