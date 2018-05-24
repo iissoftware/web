@@ -1,57 +1,45 @@
-
------------------------------------------ git 使用教程 ------------------------------
-git diff：可以查看在工作区修改过后的文件不同之处。
-git status：可以查看当前文件操作的状态。
-git log：可以查看当前文件提交过后的记录。记录着提交者是谁，提交日期时间，提交的版本号。
+git diff：对比工作区与暂存区文件内容的差异。
+git diff --cached：对比暂存区与版本库文件内容的差异。
+git diff --staged：对比暂存区与版本库文件内容的差异。
+git status：查看当前文件操作的状态。
+git log：查看提交记录。该命令会显示 版本号、作者、提交时间。
 git log --pretty=oneline：只显示提交过后的版本号。
-git log --oneline：只显示提交过后的版本号，只不过这次只有前面7位字符的版本号。
+git log --oneline：只显示提交过后的版本号。与--pretty=oneline命令不同的是--oneline命令只显示版本号前面的7位字符。
 pwd：显示当前目录所在的路径。
-git init：将目录变成git可以管理的仓库。
-
---------------------------------- git 添加 -------------------------------------------
-git add filename：讲文件filename从工作区添加到暂存区。
-git add .：将所有文件从工作区添加到暂存区。
-
-
---------------------------------- git 提交 -------------------------------------------
-git commit -m '提交注释'：将暂存区文件提交到本地仓库。
-git commit -am '提交注释'：可以跳过添加到暂存区那一步，直接将工作区文件提交到本地仓库。
-
-
---------------------------------- git 回退/撤销 --------------------------------------
-git reset HEAD^: 表示回退到上一个版本
-git reset HEAD^^: 表示回退到上上一个版本
-我们也可以使用git reset HEAD~n回退到n个版本
-git commit --amend：取消上一次提交，并将暂存区文件重新提交到版本库。
-
-git reset HEAD~1：	这个是软回退，先回退到暂存区，然后再使用命令
-					git checkout -- filename 从暂存区回退到工作区。
-git reset --hard HEAD~1：	也是回退，不过这个是强制回退，直接从版本库回退到工作区，
-							不经过暂存区。
-
+git init：初始化一个本地git管理仓库。
+git add filename：将文件filename从工作区添加到暂存区。
+git add .：添加所有文件到暂存区。
+git commit -m '提交注释'：将暂存区文件提交到版本库。
+git commit -am '提交注释'：跳过添加到暂存区这一步，直接将文件从工作区提交到版本库。
+git commit --amend ： 取消上一次提交，并将暂存区文件重新提交到版本库。
+git reset HEAD^  ： 回退到上一个版本。
+git reset HEAD^^ ： 回退到上上一个版本。
+git reset HEAD~n ： 回退到第n个版本。
+git reset HEAD~1 ： 软回退，只能回退到暂存区。
+git reset --hard HEAD~1 ： 强制回退，直接将文件从版本库回退到工作区。
 git reset --hard '某个版本号'：强制回退到具体某个版本号。
-
-git reflog：用来记录整个本地仓库的commit。甚至包括已经撤销的commit。通过这条命令，可以找到已经撤销的commit id，从而恢复到您想要的最新版本。(人生没有后悔药，但git却给我们准备了后悔药)
-
+git reflog：记录整个本地仓库的提交。包括已经撤销的提交。通过这条命令，可以找回已经撤销的版本id号，从而恢复到您想要的最新版本。
 git reset命令既可以回退版本，也可以把暂存区的修改回退到工作区。
 
 
 --------------------------------- git 提交到远程仓库 -----------------------------------------
-1、git clone url：将远程仓库克隆到本地。
+1、git clone url：克隆远程仓库到本地。
 2、git remote add origin '远程仓库地址'：将本地仓库与远程仓库关联起来。
 3、git push -u origin master：将本地文件推向远程仓库。
 (注意：如果你在第3步中出错，可能就是因为你的ssh秘钥引起的，此时，先在你的本地找到.ssh文件夹下的id_rsa.pub文件，将此问价下的秘钥复制，并打开您的github官网点击头像->settings -> ssh and gpg keys -> New ssh key -> 将秘钥复制进去，标题随便你起。此时之后你就可以push和pull了)
 
 
---------------------------------- git 删除 -------------------------------------------
-#...待写
+--------------------------------- git分支管理 -----------------------------------------
 
---------------------------------- git 重命名 -----------------------------------------
-#...待写
-
-
-//git 创建、删除、切换本地分支
-
+<<<<<<< HEAD
+git branch dev  ==> 创建一个本地分支dev。
+git checkout dev       ==>  切换到本地dev分支。
+git checkout -b dev    ==>  创建一个本地分支dev同时切换到该分支。
+git branch -d dev      ==>  删除本地dev分支。
+git branch   ==> 查看本地所有分支。
+git branch -r   ==> 查看远程所有分支(r是remote的简写，表示远程的)。
+git branch -a  ==> 查看所有的分支(本地分支 + 远程分支)。
+=======
 git branch dev  ==> 新建一个dev分支，但不切换到其它分支
 git checkout -b dev    ==>  建立一个新的本地分支dev并切换到dev分支
 git checkout dev       ==>  切换到本地dev分支
@@ -60,20 +48,18 @@ git branch -d dev      ==>  删除本地dev分支
 git branch   ==> 查看本地所有分支
 git branch -r   ==> 查看远程所有分支(r是remote的简写，表示远程的)
 git branch -a  ==>查看所有的分支(本地分支 + 远程分支)
+>>>>>>> 0b6652e078911c6cde5d55b6f4eb2dedffea7087
 git branch --all  ==> 查看所有分支。
 git push origin master  ==> 将文件推到远程仓库master分支上
-git push -u origin master -f  ==> 将文件强制推到远程仓库中。一般是不可取的，因为这样会使远程修改丢失，尤其是多人开发的时候。
+git push origin master -f  ==> 将文件强制推到远程仓库中。一般是不可取的，因为这样会使远程修改丢失，尤其是多人开发的时候。
 git remote show  ==> 查看远程库 默认是origin
 git clone git@github.com:iissoftware/web.git   ==> 从服务器上将代码给拉下来
 git config --list  ==> 查看所有用户
 git ls-files  ==> 查看已经添加到暂存区的文件
 git ls-files -s  ==> 查看已经添加到暂存区的文件
-git diff --cached ==> 查看暂存区文件
-git diff --staged ==> 查看暂存区文件
 git rm --cached <file>  ==> 仅仅删除暂存区文件，不会影响到工作区
 git rm -f <file>  ==> 删除暂存区和工作区的文件
 rm <file> ==> 删除工作区的文件
-
 git push origin -d dev   ==>  删除远程dev分支
 git merge dev  ==>  在本地master分支下，将本地分支dev合并到master分支上。
 

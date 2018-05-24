@@ -1,0 +1,68 @@
+一、什么是JSON?
+    JSON全称(Javascript Object Notation)： 对象表示法，是一种轻量级的文本数据交换格式。
+
+二、为什么要用JSON？
+    对于使用AJAX进行数据交互来说,JSON比XML更快更易用。
+
+三、JSON与XML异同：
+    相同点：
+        1) 都是纯文本形式。
+        2) 都具有层级结构，比如可嵌套。
+        3) 都可通过javascript解析。
+        4) 都可用ajax进行传输。
+
+    不同点：
+        1) json没有结束标签。
+        2）读写速度更快
+        3) 能够使用内建的javascript eval()方法进行解析。
+        4）json使用了数组结构。
+
+四、JSON数据结构
+    JSON有两种数据结构：
+        1）Map形式：也就是键值对形式。var json = {"name": "iissoftware","sex": "male"}
+        2) Array形式： 数组形式。 ["iissoftware","sex","male"]
+
+五、JSON语法规则：
+    数据以键/值对形式
+    数据与数据之间通过英文逗号隔开
+    大括号保存对象
+    中括号保存数组
+
+六、JSON序列化和反序列化：
+    什么是序列化？
+        序列化就是将对象状态信息转换为可以存储或传输形式的过程。js可通过JSON.stringify(obj)进行序列化。
+    什么是反序列化？
+        将字符串形式的对象转换为真正的对象形式。js可通过JSON.parse(strObj)
+
+七、JSONP使用
+    什么是JSONP？
+        JSONP是json的一种‘使用模式’，可以让网页从别的域名获取数据，即跨域读取数据。
+    为何从不同的域读取数据需要使用JSONP？
+        因为浏览器的同源策略。
+    什么是同源策略？
+        同源策略，它是由网景(Netscape)提出的一个著名的安全策略，现在所有支持JavaScript 的浏览器都会使用这个策略。
+        $.ajax({
+            url: 'http://www.baidu.com/ajax/jsonp.php',
+            dataType: 'jsonp',
+            type: 'get',
+            jsonp: 'callback',          //请求php的参数名
+            async: true,                //是否异步请求
+            success: function(data){
+                console.log(data);
+            },
+            error: function(){
+
+            }
+        });
+
+        //jsonp.php
+        <?php
+            $data = array(
+                'name' => 'iissoftware',
+                'sex' => 'male',
+                'job' => 'web'
+            );
+            $callback = $_GET['callback'];
+            echo $callback.'('.json_encode($data).')';
+            return;
+        ?>

@@ -1,0 +1,26 @@
+一、新增一些语义化标签
+<header>     标签定义文档的页眉。
+<footer>     标签定义文档的页脚。
+<section>    标签定义文档的节（区段）。
+<article>    标签定义一个文章内容区块。
+<aside>      标签定义 article 以外的内容。
+<nav>        标签定义导航部分。
+<audio>      定义一个音频文件。
+<video>      定义一个视频文件。
+<canvas>     绘制图表、游戏标签。
+<datalist>   与输入框的 list 属性一起使用可用来创建组合框。
+<figure>     标签用于对元素进行包裹组合。比如对图片作者信息，发表时间，描述等包裹起来。
+<progress>   标签标示任务的进度。<progress value="50" max="100">
+<time>       表示日期和时间。<time>9:00</time> <time datetime="2018-6-1">儿童节</time>
+<meter>      定义一个度量衡。
+
+
+二、为<input>标签的type属性新增一个类型。
+    color    拾色器，可以通过色盘或者调色板来表现
+    date     日历日期选择器。
+    email    输入类型应该是邮件
+    url      输入类型应该是 URL 类型
+    number   只能包含一个数字值的字段
+    range    区间数值选择器，通常显示为一个滑块
+    search   为搜索引擎提供关键字。比如，浏览器顶部的搜索栏。
+    Date pickers (date, month, week, time, datetime, datetime-local) 
