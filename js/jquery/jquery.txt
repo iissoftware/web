@@ -1,0 +1,11 @@
+if(typeof selector === 'string'){
+    $('#xx'), 
+    $('.xx'), 
+    $('xx'), 
+    $('#xx .xx'), 
+    $('<li>'), 
+    $('<li></li>'), 
+    $('<li>1</li><li>2</li>')
+    $(function(){})
+
+}
