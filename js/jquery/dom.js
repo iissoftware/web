@@ -2,11 +2,16 @@
     factory(global);
 })(this,function(global){
     var
+<<<<<<< HEAD
     class2type = {},
     core_toString = class2type.toString,
     rquickExpr = /^(?:\s*\.([\w-]*)|#([\w-]*))$/,
     rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
     rhtml = /<|&#?\w+;/,
+=======
+    rquickExpr = /^(?:\s*\.([\w-]*)|#([\w-]*))$/,
+    rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+>>>>>>> 09dba13b44a2f378a9f0b567c42025f599e7195d
     jQuery = function( selector,context ) {
         return new jQuery.fn.init( selector,context );
     };
@@ -23,12 +28,16 @@
 
             //如果是HTML或者字符串
             if ( typeof selector === 'string' ) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 09dba13b44a2f378a9f0b567c42025f599e7195d
                 if ( selector.charAt(0) === '<' && selector.charAt( selector.length - 1 ) === '>' && selector.length >= 3) {
                     match = [ null, selector, null ];
                 } else {
                     match = rquickExpr.exec( selector );
                 }
+<<<<<<< HEAD
 
                 if ( match && ( match[1] || !context )) {
                     if ( match[1] ) {
@@ -40,6 +49,16 @@
                     }
                 }
 
+=======
+                if ( match && ( match[1] || !context )) {
+                    if ( match[1] ) {
+                        context = context instanceof jQuery ? context[0] : context;
+                        var arr = jQuery.parseHTML( match[1], context && context.nodeType ? context.ownerDocument || context : document, true);
+                        jQuery.merge(this, arr);       //合并到类数组对象中去
+                    }
+                    console.log(rsingleTag.test( match[1] ))
+                }
+>>>>>>> 09dba13b44a2f378a9f0b567c42025f599e7195d
             }
 
         },
@@ -104,12 +123,17 @@
                 return null;
             }
 
+<<<<<<< HEAD
             //只有两个参数的时候，第二个就是是否保存script标签，这时候context就没有传进来!
+=======
+            //如果是布尔类型的，将值保存到keepScripts变量中，默认设置context = false
+>>>>>>> 09dba13b44a2f378a9f0b567c42025f599e7195d
             if( typeof context === 'boolean' ) {
                 keepScripts = context;
                 context = false;
             }
 
+<<<<<<< HEAD
 
             //如果只有两个参数那么context就是document对象!  
             context = context || document;
@@ -119,10 +143,19 @@
                 scripts = !keepScripts && [];
 
             //如果是单个标签就调用相应的createElement方法，默认上下文是document!
+=======
+            context = context || document;
+
+            var parsed = rsingleTag.exec( data ),
+                scripts = !keepScripts && [];
+
+            //如果匹配到这个元素，将创建这个元素并保存到数组中返回
+>>>>>>> 09dba13b44a2f378a9f0b567c42025f599e7195d
             if( parsed ) {
                 return [ context.createElement( parsed[1] ) ];
             }
 
+<<<<<<< HEAD
             //如果不是单标签，就调用buildFragment方法，把html字符串传入，同时上下文也传入，第三个参数就是scripts!
             //如果paseHTML的第三个参数是false，那么这里的scripts就是一个数组，传递到buildFragment中会把所有的script标签放在里面  
             //所以就要收到移除!  
@@ -161,6 +194,8 @@
             while ( elem = nodes[ i++ ] ) {
                 console.dir(elem)
             }
+=======
+>>>>>>> 09dba13b44a2f378a9f0b567c42025f599e7195d
         }
     });
 

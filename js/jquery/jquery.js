@@ -457,7 +457,10 @@ jQuery.extend({
         if ( !data || typeof data !== "string" ) {
             return null;
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 09dba13b44a2f378a9f0b567c42025f599e7195d
         if ( typeof context === "boolean" ) {
             keepScripts = context;
             context = false;
@@ -5807,6 +5810,10 @@ jQuery.extend({
 
         // Remove wrapper from fragment
         fragment.textContent = "";
+<<<<<<< HEAD
+=======
+
+>>>>>>> 09dba13b44a2f378a9f0b567c42025f599e7195d
         i = 0;
         while ( (elem = nodes[ i++ ]) ) {
 
