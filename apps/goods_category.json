@@ -1,0 +1,68 @@
+[
+    {
+        "_id" : 1,
+        "name" : "美食",
+        "img" : "./public/images/goods_category/p1.jpeg",
+        "level" : 0
+    },
+    {   
+        "_id" : 2,
+        "name" : "商超便利",
+        "img" : "./public/images/goods_category/p2.jpeg",
+        "level" : 0
+    },
+    {
+        "_id" : 3,
+        "name" : "夜宵",
+        "img" : "./public/images/goods_category/p3.jpeg",
+        "level" : 0
+    },
+    {
+        "_id" : 4,
+        "name" : "果蔬生鲜",
+        "img" : "./public/images/goods_category/p4.jpeg",
+        "level" : 0
+    },
+    {
+        "_id" : 5,
+        "name" : "医药健康",
+        "img" : "./public/images/goods_category/p5.jpeg",
+        "level" : 0
+    },
+    {
+        "_id" : 6,
+        "name" : "大牌5折",
+        "img" : "./public/images/goods_category/p6.jpeg",
+        "level" : 0
+    },
+    {
+        "_id" : 7,
+        "name" : "浪漫鲜花",
+        "img" : "./public/images/goods_category/p7.jpeg",
+        "level" : 0
+    },
+    {
+        "_id" : 8,
+        "name" : "麻辣烫",
+        "img" : "./public/images/goods_category/p8.jpeg",
+        "level" : 0
+    },
+    {
+        "_id" : 9,
+        "name" : "地方菜系",
+        "img" : "./public/images/goods_category/p9.jpeg",
+        "level" : 0
+    },
+    {
+        "_id" : 10,
+        "name" : "披萨意面",
+        "img" : "./public/images/goods_category/p10.jpeg",
+        "level" : 0
+    },
+    {
+        "_id" : 11,
+        "name" : "地方小吃",
+        "img" : "./public/images/goods_category/p11.jpeg",
+        "level" : 0
+    }
+]

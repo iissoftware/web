@@ -1,0 +1,41 @@
+.lbg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    overflow-y: scroll;
+    cursor: help;
+}
+.llogo {
+    padding: 40px 0 30px;
+}
+
+.llogo > p {
+    color: #1b9dff;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+.switch-link {
+    display: flex;
+    justify-content: center;
+}
+
+.switch-link > a {
+    font-size: 14px;
+    text-decoration: none;
+    color: #333;
+    padding-bottom: 3px;
+    letter-spacing: 1px;
+}
+
+.switch-link > a:first-child {
+    text-align: right;
+    margin-right: 40px;
+}
+
+.switch-link .router-link-active {
+    color: #2395ff;
+    border-bottom: 2px solid #2395ff;
+}

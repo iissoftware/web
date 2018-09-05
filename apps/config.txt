@@ -1,0 +1,4 @@
+e10adc3949ba59abbe56e057f20f883e
+
+
+mongod.exe --logpath D:\app\admin\data\log\mongodb.log --logappend --dbpath D:\app\admin\data\db --directoryperdb --serviceName MongoDB -install

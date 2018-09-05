@@ -1,0 +1,133 @@
+.navbar-top {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: 15px 25px 0;
+}
+
+.navbar-top .back {
+    left: 20px;
+    top: 15px;
+    width: 20px;
+    height: 20px;
+    background: url(/static/icon/icon-left.png) no-repeat;
+    background-size: 100% 100%;
+}
+.u-info {
+    display: flex;
+    padding: 20px;
+}
+.u-info-head {
+    width: 70px;
+    height: 70px;
+    margin-right: 15px;
+}
+
+.u-info-head .img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: url(../img/head.png) no-repeat;
+    display: block;
+}
+
+.u-info-msg {
+    display: flex;
+    flex-direction: column;
+    
+    justify-content: center;
+    color: #fff;
+}
+
+.u-info-msg > p:first-child {
+    font-size: 28px;
+    margin-bottom: 5px;
+    padding-left: 2px;
+}
+
+.u-info-msg > p:last-child {
+    font-size: 14px;
+}
+
+.u-info-info {
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.u-info-info > span {
+    width: 20px;
+    height: 20px;
+    background: url(/static/icon/icon-right.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+.u-info-msg .icon-mobile {
+    width: 16px;
+    height: 16px;
+    background: url(/static/icon/icon-mobile.png) no-repeat;
+    background-size: 100% 100%;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: -2px;
+}
+
+.package-list {
+    display: flex;
+    text-align: center;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+.package-list > div {
+    flex: 1;
+    padding: 10px 0;
+}
+
+.package-list > div + div {
+    border-left: 1px solid #eee;
+}
+
+.package-list > div .num {
+    font-weight: bold;
+    font-size: 24px;
+}
+.package-list > div .unit {
+    font-size: 14px;
+}
+
+.package-list > div > p:last-child {
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+}
+
+.strip-list .icon-left {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin: -4px 5px 0 0;
+    background-size: 100% 100% !important;
+}
+
+.strip-list .icon-location {
+    background: url(/static/icon/icon-location.png) no-repeat;
+}
+.strip-list .icon-shop {
+    background: url(/static/icon/icon-shop.png) no-repeat;
+}
+.strip-list .icon-gift {
+    background: url(/static/icon/icon-gift.png) no-repeat;
+}
+.strip-list .icon-service {
+    background: url(/static/icon/icon-service.png) no-repeat;
+}
+.strip-list .icon-download {
+    background: url(/static/icon/icon-download.png) no-repeat;
+}

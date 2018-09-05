@@ -1,0 +1,31 @@
+.footer {
+    background-color: #fff;
+    border-top: 1px solid #eee;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    text-align: center;
+}
+
+.footer .item {
+    flex: 1;
+    padding: 10px 0;
+}
+
+.footer .item > a {
+    display: block;
+}
+
+.footer .item > img {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+.footer .router-link-exact-active {
+    color: #0089dc;
+    font-weight: bold;
+}
