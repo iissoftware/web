@@ -17,11 +17,11 @@
                         <img src="../../assets/images/money.png" alt="">
                         <p class="item-name">币别</p>
                     </div>
-                    <div class="item">
+                    <div class="item" @click="showMeasure">
                         <img src="../../assets/images/jiliang.png" alt="">
                         <p class="item-name">计量单位</p>
                     </div>
-                    <div class="item" @click="showBalanceType">
+                    <div class="item">
                         <img src="../../assets/images/jiesuan.png" alt="">
                         <p class="item-name">结算方式</p>
                     </div>
@@ -51,7 +51,7 @@
                     <h3 class="list-title">
                         <span>档案资料</span>
                     </h3>
-                    <div class="item">
+                    <div class="item" @click="showDepartment">
                         <img src="../../assets/images/bumen.png" alt="">
                         <p class="item-name">部门资料</p>
                     </div>
@@ -114,11 +114,13 @@
                 </div>
             </div>
             <!-- 上机日志组件 -->
-            <v-online-log v-if="abc"/>
+            <v-online-log/>
             <!-- 币别组件 -->
-            <v-money-type v-if="abc"/>
-            <!-- 结算方式 -->
-            <v-balance-type v-if="abc"/>
+            <v-money-type/>
+            <!-- 计量单位组件 -->
+            <v-measure/>
+            <!-- 部门资料组件 -->
+            <v-department/>
         </div>
     </div>
 </template>
@@ -127,11 +129,12 @@ import Header from '../Header'
 import Sidebar from '../Sidebar'
 import OnlineLog from './OnlineLog'
 import MoneyType from './MoneyType'
-import BalanceType from './BalanceType'
+import Measure from './Measure'
+import Department from './Department'
 export default {
     data() {
         return {
-            abc: false
+            isShowOnlineLog: false
         }
     },
     components: {
@@ -139,29 +142,23 @@ export default {
         'v-sidebar': Sidebar,
         'v-online-log': OnlineLog,
         'v-money-type': MoneyType,
-        'v-balance-type': BalanceType
+        'v-measure': Measure,//计量单位
+        'v-department': Department,//部门资料
     },
     methods: {
-        showOnlieLog() {        //上机日志
-            this.abc = true;
-            setTimeout(() => {
-                this.openDrag('上机日志', '80%', '500px', '#onlineLog', 12);
-            })
+        showOnlieLog() {            //打开上机日志弹窗
+            this.openDrag('上机日志', '80%', '500px', '#onlineLog', 12);
         },
-        showMoneyType() {       //币别
-            this.abc = true;
-            setTimeout(() => {
-                this.openDrag('币别', '80%', '500px', '#moneyType', 12);
-            })
+        showMoneyType() {
+            this.openDrag('币别', '80%', '500px', '#moneyType', 12);
         },
-        showBalanceType() {     //结算方式
-            this.abc = true;
-            setTimeout(() => {
-                this.openDrag('结算类别', '55%', 'auto', '#balanceType', 12);
-            })
+        showMeasure() {             //打开计量单位弹窗
+            this.openDrag('计量单位', '81%', 'auto', '#measure', 12);  
         },
-        openDrag(title, width, height, id, zIndex) {           //封装打开窗口函数
-            var that = this;
+        showDepartment() {             //打开部门资料弹窗
+            this.openDrag('部门资料', '95%', 'auto', '#department', 12);  
+        },
+        openDrag(title, width, height, id, zIndex) {            //封装打开窗口函数
             layer.open({
                 type: 1,
                 title: title,
@@ -178,9 +175,6 @@ export default {
                 restore: function() {       //还原后触发
                     $('.layui-layer-content').removeAttr('style');
                     $('.dragBox .el-table__body-wrapper').removeAttr('style');
-                },
-                end: function() {
-                    that.abc = false;
                 }
             });
         }
