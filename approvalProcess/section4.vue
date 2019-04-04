@@ -57,40 +57,25 @@ export default {
                 this.isAdd = false;
                 let store = this.$store.state.approvalProcessStore,
                     rootId = store.rootId,
-                    treeData = store.treeData;
+                    treeData = store.treeData,
+                    dp = null;
                 treeData.forEach(rootItem => {
                     rootItem['children'].forEach(vercharItem => {
-                        if(vercharItem['subList'].length > 0) {
-                            vercharItem['children'].splice(0);
-                            vercharItem['subList'].forEach(dpItem => {
-                                vercharItem['children'].push(dpItem);
-                            });
+                        vercharItem['children'].splice(0);
+                        vercharItem['subList'].forEach(dpItem => {
+                            vercharItem['children'].push(dpItem);
                             if(vercharItem['children'].length > 0) {
                                 vercharItem['children'].forEach(dpItem => {
                                     if(dpItem['subList'].length > 0) {
                                         dpItem['children'].splice(0);
                                         dpItem['subList'].forEach(empItem => {
+                                            if(empItem['children'].length > 0) empItem['children'].splice(0);
                                             dpItem['children'].push(empItem);
                                         });
-                                    } else {
-                                        /* 如果从部门页面直接到金额页面，跨过了职员页面，那么需要在部门节点下面加上默认全部节点
-                                           作为职员节点
-                                        */
-                                        dpItem['children'].splice(0, 1, this.setAllNode(store.allId, dpItem['id'], vercharItem['rootId'], '全部', 3));
                                     }
                                 });
                             }
-                        } else {
-                            /* 如果从会计科目直接跳到金额页面，跨过部门和职员页面，那么需要在会计科目节点下面加上默认全部节点
-                               作为部门节点，再在默认全部部门节点下面加上默认全部职员节点。  形式：单据->会计科目->全部->全部->金额列表
-                            */
-                            //先增加默认部门
-                            vercharItem['children'].splice(0, 1, this.setAllNode(store.allId, vercharItem['id'], vercharItem['rootId'], '全部', 2));
-                            //再增加职员
-                            vercharItem['children'].forEach(dpItem => {
-                                dpItem['children'].splice(0, 1, this.setAllNode(store.allId, dpItem['id'], vercharItem['rootId'], '全部', 3));
-                            });
-                        }
+                        });
                     });
                 });
                 this.treeData = [].concat(treeData);
@@ -117,7 +102,6 @@ export default {
                 this.isAdd = false;
                 this.tableData = [];
             }
-            this.$store.commit('approvalProcessStore/updateId', {nodeId: row['id'], rootId: row['rootId']});
         },
         selectionChange(arr) {
             this.multipleSelection = arr;

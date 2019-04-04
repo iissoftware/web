@@ -49,11 +49,11 @@ export default {
             });
         },
         nodeClick(row) {            //树形结构节点触发
-            let nodeId = this.$store.state.approvalProcessStore.nodeId,
-                rootId = this.$store.state.approvalProcessStore.rootId;
+            let store = this.$store.state.approvalProcessStore,
+                rootId = store.rootId;
             this.currentNode = {
                 id: row['id'],
-                pid: nodeId,
+                pid: rootId,
                 rootId: rootId,
                 name: row['name'],
                 level: 1,
@@ -77,16 +77,18 @@ export default {
         },
         save() {            //保存
             if(this.currentNode['id']) {
-                let allId = this.$store.state.approvalProcessStore.allId;
+                let store = this.$store.state.approvalProcessStore,
+                    allId = store.allId;
                 let obj = {
                     id: allId,
                     pid: this.currentNode['pid'],
                     level: 1,
                     rootId: this.currentNode['rootId'],
                     name: '全部',
-                    subList: [],
+                    subList: [{id: allId, name: '全部', pid: allId, rootId: this.currentNode['rootId'], level: 2, parentName: '无', parentId: 0, subList: [{id: allId, name: '全部', pid: allId, rootId: this.currentNode['rootId'], level: 3, subList: [{id: allId, pid: allId, rootId: this.currentNode['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}], children: []}], children: []}],
                     children: []
                 }
+                this.currentNode['subList'].push({id: allId, name: '全部', pid: this.currentNode['id'], rootId: this.currentNode['rootId'], level: 2, parentName: '无', parentId: 0, subList: [{id: allId, name: '全部', pid: allId, rootId: this.currentNode['rootId'], level: 3, subList: [{id: allId, pid: allId, rootId: this.currentNode['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}], children: []}], children: []});
                 this.$store.commit('approvalProcessStore/updateNodes', {level: 1, node: [obj, this.currentNode]});        //保存后，将当前选中的会计科目节点保存到store里面
                 this.close();
             } else {

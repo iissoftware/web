@@ -1,10 +1,9 @@
 import Axios from "axios";
-import Vue from 'vue'
 
 const state = {
     treeData: [],
     activeName: ['first'],
-    allId: 99999999,        //默认全部的id
+    allId: 999999999,        //默认全部的id
     nodeId: null,       //当前节点id
     rootId: null,       //根节点id
     moneyIndex: {           //各个单据金额id
@@ -19,6 +18,7 @@ const state = {
     maxMoney: 50000000,     //金额上限
     sIndex: 0,              //审批步骤表格id
     names: [],      //  存储所有审核人
+    row: []
 }
 
 const mutations = {
@@ -35,6 +35,9 @@ const mutations = {
     updateSIndex(state, id) {        //更新审核人id
         state.sIndex = id;
     },
+    updateRow(state, row) {
+        state.row.splice(0, 1, row);
+    },
     updateNodes(state, obj) {       //添加节点
         this.commit('approvalProcessStore/recursAddNode', {data: state.treeData, node: obj});
     },
@@ -42,71 +45,50 @@ const mutations = {
         let node = obj['node'];         //{level: xxx, node: []}
         obj['data'].forEach(item => {
             if(item['level'] == Number(node['level'] - 1)) {
-                // if(node['node'][0]['pid'] == item['id'] && node['node'][0]['rootId'] == item['rootId']) {
-                    switch(node['level']) {       //新增会计科目节点
-                        case 1:
-                            node['node'].forEach(item2 => {
-                                let flag = true;
-                                item['children'].forEach(item3 => {
-                                    if(item3['id'] == item2['id']) {
-                                        flag = false;
-                                        return false;
-                                    }
-                                });
-                                if(flag) item['children'].push(item2);
-                            });
-                            break;
-                        case 2:
-                            node['node'].forEach(item2 => {         //新增部门节点
-                                let flag = true;
-                                item['subList'].forEach(item3 => {
-                                    if(item3['id'] == item2['id']) {
-                                        flag = false;
-                                        return false;
-                                    }
-                                });
-                                if(flag) item['subList'].push(item2);
-                            });
-                            break;
-                        case 3:
-                            node['node'].forEach(item2 => {         //新增部门节点
-                                let flag = true;
-                                item['subList'].forEach(item3 => {
-                                    if(item3['id'] == item2['id']) {
-                                        flag = false;
-                                        return false;
-                                    }
-                                });
-                                if(flag) item['subList'].push(item2);
-                            });
-                            break;
-                        case 4:
-                            node['node'].forEach(item2 => {         //新增部门节点
-                                let flag = true;
-                                item['subList'].forEach(item3 => {
-                                    if(item3['id'] == item2['id'] || (item3['money1'] == item2['money1'] && item3['money2'] == item2['money2'])) {
-                                        flag = false;
-                                        return false;
-                                    }
-                                });
-                                if(flag) item['subList'].push(item2);
-                            });
-                            break;
-                        case 5:
-                            node['node'].forEach(item2 => {         //新增部门节点
-                                let flag = true;
-                                item['subList'].forEach(item3 => {
-                                    if(item3['id'] == item2['id']) {
-                                        flag = false;
-                                        return false;
-                                    }
-                                });
-                                if(flag) item['subList'].push(item2);
-                            });
-                            break;
-                        default: break;
+                node['node'].forEach(item2 => {
+                    if(item['rootId'] == item2['rootId']) {
+                        switch(node['level']) {
+                            case 1:
+                                if(item['id'] == item2['pid']) {
+                                    let flag = true;
+                                    item['children'].forEach(item3 => {
+                                        if(item3['id'] == item2['id']) {
+                                            flag = false;
+                                            return false;
+                                        }
+                                    });
+                                    if(flag) item['children'].push(item2);
+                                }
+                                break;
+                            case 2:
+                                if(item['id'] == item2['pid']) {
+                                    let flag = true;
+                                    item['subList'].forEach(item3 => {
+                                        if(item3['id'] == item2['id']) {
+                                            flag = false;
+                                            return false;
+                                        }
+                                    });
+                                    if(flag) item['subList'].push(item2);
+                                }
+                                break;
+                            case 3:
+                                if(item['id'] == item2['pid']) {
+                                    console.log(item)
+                                    let flag = true;
+                                    item['subList'].forEach(item3 => {
+                                        if(item3['id'] == item2['id']) {
+                                            flag = false;
+                                            return false;
+                                        }
+                                    });
+                                    if(flag) item['subList'].push(item2);
+                                }
+                                break;
+                            default: break;
+                        }
                     }
-                // }
+                });
             } else {
                 this.commit('approvalProcessStore/recursAddNode', {data: item['children'], node});
             }
@@ -136,8 +118,9 @@ const actions = {
                         treeData = state.treeData,
                         minMoney = state.minMoney,
                         maxMoney = state.maxMoney;
+                    treeData.splice(0);
                     data.forEach((item, index) => {
-                        item['children'] = [{id: state.allId, pid: item['id'], level: 1, rootId: item['id'], name: '全部', subList: [], children: []}];
+                        item['children'] = [{id: allId, pid: item['id'], level: 1, rootId: item['id'], name: '全部', subList: [], children: []}];
                         item['subList'] = [];
                         item['rootId'] = item['id'];
                         item['level'] = 0;
@@ -146,13 +129,13 @@ const actions = {
                         //初始化会计科目
                         item['children'].forEach(vercharItem => {
                             if(vercharItem['subList'].length <= 0) {
-                                vercharItem['subList'].push({id: state.allId, name: '全部', parentId: 0, parentName: '无', level: 2, pid: vercharItem['id'], rootId: vercharItem['rootId'], subList: [], children: []});
+                                vercharItem['subList'].push({id: allId, name: '全部', parentId: 0, parentName: '无', level: 2, pid: vercharItem['id'], rootId: vercharItem['rootId'], subList: [], children: []});
                                 vercharItem['subList'].forEach(dpItem => {
                                     if(dpItem['subList'].length <= 0) {
-                                        dpItem['subList'].push({id: state.allId, name: '全部', level: 3, pid: dpItem['id'], rootId: dpItem['rootId'], subList: [], children: []});
+                                        dpItem['subList'].push({id: allId, name: '全部', level: 3, pid: dpItem['id'], rootId: dpItem['rootId'], subList: [], children: []});
                                         dpItem['subList'].forEach(empItem => {
                                             if(empItem['subList'].length <= 0) {
-                                                empItem['subList'].push({id: state.allId, money1: minMoney, money2: maxMoney, name: minMoney + ' ~ ' + maxMoney + '元', level: 4, pid: empItem['id'], rootId: empItem['rootId'], subList: [], children: []});
+                                                empItem['subList'].push({id: allId, money1: minMoney, money2: maxMoney, name: minMoney + ' ~ ' + maxMoney + '元', level: 4, pid: empItem['id'], rootId: empItem['rootId'], subList: [], children: []});
                                             }
                                         });
                                     }

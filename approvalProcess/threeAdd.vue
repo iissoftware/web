@@ -41,29 +41,29 @@ export default {
             });
         },
         rowDBClick(row) {
-            let store = this.$store.state.approvalProcessStore;
-            let id = store.nodeId;     //拿到部门父级id
-            let rootId = store.rootId;     //拿到部门父级id
+            let store = this.$store.state.approvalProcessStore,
+                id = store.nodeId,
+                rootId = store.rootId,
+                allId = store.allId;
             let list = {
                 id: row['id'],
                 name: row['name'],
                 pid: id,
                 rootId: rootId,
                 level: 3,
-                subList: [],
+                subList: [{id: allId, pid: row['id'], rootId: row['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}],
                 children: []
             }
             let obj = {
-                id: store.allId,
+                id: allId,
                 name: '全部',
                 pid: id,
                 rootId: rootId,
                 level: 3,
-                subList: [],
+                subList: [{id: allId, pid: allId, rootId: rootId, level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}],
                 children: []
             }
             this.$store.commit('approvalProcessStore/updateNodes', {level: 3, node: [obj, list]});        //保存后，将当前选中的会计科目节点保存到store里面
-            this.close();
         },
         close() {
             let index = parent.layer.getFrameIndex(window.name);    //先得到当前iframe层的索引

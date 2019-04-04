@@ -80,11 +80,11 @@ export default {
             if(row['level'] === 1) {
                 this.isAdd = true;
                 this.tableData = row['subList'];
+                this.$store.commit('approvalProcessStore/updateId', {nodeId: row['id'], rootId: row['rootId']});
             } else {
                 this.isAdd = false;
                 this.tableData = [];
             }
-            this.$store.commit('approvalProcessStore/updateId', {nodeId: row['id'], rootId: row['rootId']});
         },
         selectionChange(arr) {
             this.multipleSelection = arr;

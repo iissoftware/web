@@ -79,7 +79,8 @@ export default {
             return data.name.indexOf(value) !== -1;
         },
         save() {
-            let allId = this.$store.state.approvalProcessStore.allId;
+            let store = this.$store.state.approvalProcessStore,
+                allId = store.allId;
             let obj = {
                 id: allId,
                 name: '全部',
@@ -88,11 +89,12 @@ export default {
                 pid: this.currentNode['pid'],
                 rootId: this.currentNode['rootId'],
                 level: 2,
-                subList: [],
+                subList: [{id: allId, pid: allId, name: '全部', rootId: this.currentNode['rootId'], level: 3, subList: [{id: allId, pid: allId, rootId: this.currentNode['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}], children: []}],
                 children: []
             }
             if(this.currentNode['parentId'] == 0) {         //如果没有上级部门，也就是上级是公司了，那么parentName就是公司名称
                 this.currentNode['parentName'] = this.systemInfo['companyNameChinese'];
+                this.currentNode['subList'].push({id: allId, pid: this.currentNode['id'], name: '全部', rootId: this.currentNode['rootId'], level: 3, subList: [{id: allId, pid: allId, rootId: this.currentNode['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}], children: []});
                 this.$store.commit('approvalProcessStore/updateNodes', {level: 2, node: [obj, this.currentNode]});        //保存后，将当前选中的会计科目节点保存到store里面
                 this.close();
             } else {
@@ -101,6 +103,7 @@ export default {
                         if(res.data.data) {
                             this.currentNode['parentName'] = res.data.data['name'];
                             obj['parentId'] = this.currentNode['parentId'];
+                            this.currentNode['subList'].push({id: allId, pid: this.currentNode['id'], name: '全部', rootId: this.currentNode['rootId'], level: 3, subList: [{id: allId, pid: allId, rootId: this.currentNode['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}], children: []});
                             this.$store.commit('approvalProcessStore/updateNodes', {level: 2, node: [obj, this.currentNode]});        //保存后，将当前选中的会计科目节点保存到store里面
                             this.close();
                         }

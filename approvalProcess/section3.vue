@@ -60,22 +60,16 @@ export default {
                 this.isAdd = false;
                 let store = this.$store.state.approvalProcessStore,
                     rootId = store.rootId,
-                    treeData = store.treeData;
+                    treeData = store.treeData,
+                    verchar = null;
                 treeData.forEach(rootItem => {
                     rootItem['children'].forEach(vercharItem => {
-                        if(vercharItem['subList'].length > 0) {
-                            vercharItem['children'].splice(0);
-                            vercharItem['subList'].forEach(dpItem => {
-                                vercharItem['children'].push(dpItem);
-                            });
-                        } else {
-                            /* 如果从会计科目直接跳到职员页面，跨过部门，那么需要在会计科目节点下面加上默认全部节点，
-                               作为部门节点。 形式：单据->会计科目->全部->职员列表
-                            */
-                            // let obj = this.setAllNode(store.allId, vercharItem['id'], vercharItem['rootId'], '全部', 2);
-                            // console.log(obj)
-                            vercharItem['children'].splice(0, 1, this.setAllNode(store.allId, vercharItem['id'], vercharItem['rootId'], '全部', 2));
-                        }
+                        vercharItem['children'].splice(0);
+                        vercharItem['subList'].forEach(dpItem => {
+                            if(dpItem['children'].length > 0) dpItem['children'].splice(0);
+                            vercharItem['children'].push(dpItem);
+                        });
+                        verchar = vercharItem['subList'];
                     });
                 });
                 this.treeData = [].concat(treeData);
@@ -98,11 +92,12 @@ export default {
             if(row['level'] === 2) {
                 this.isAdd = true;
                 this.tableData = row['subList'];
+                this.$store.commit('approvalProcessStore/updateId', {nodeId: row['id'], rootId: row['rootId']});
+                this.$store.commit('approvalProcessStore/updateRow', row);
             } else {
                 this.isAdd = false;
                 this.tableData = [];
             }
-            this.$store.commit('approvalProcessStore/updateId', {nodeId: row['id'], rootId: row['rootId']});
         },
         selectionChange(arr) {
             this.multipleSelection = arr;
