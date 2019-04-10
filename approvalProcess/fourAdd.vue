@@ -35,29 +35,20 @@
 			save(formName) {			//保存
 				this.$refs[formName].validate((valid) => {
                 	if (valid) {
-                		let store = this.$store.state.approvalProcessStore;
-                		let id = store.nodeId;
-                		let rootId = store.rootId;
-                		let moneyIndex = store.moneyIndex;
-                		this.formData['id'] = ++moneyIndex['index' + rootId];			//对应的单据金额索引递增
-                		this.formData['pid'] = id;
-                		this.formData['rootId'] = rootId;
-                		this.formData['name'] = this.formData['money1'] + '元' + '~' + this.formData['money2'] + '元';
-                		this.formData['level'] = 4;
-                		this.formData['subList'] = [];
-                		let obj = {
-                			id: store.allId,
-                			pid: id,
-                			rootId: rootId,
-                			money1: 0,
-                			money2: 50000000,
-                			name: 0 + ' ~ ' + 50000000 + '元',
-                			level: 4,
-                			subList: []
-                		}
-                		this.$store.commit('approvalProcessStore/updateNodes', {level: 4, node: [obj, this.formData]});        //保存后，将当前选中的会计科目节点保存到store里面
-                		this.$store.commit('approvalProcessStore/updateIndex', {index: rootId, data: this.formData['id']});			//更新对应的单据金额索引
-                		this.close();
+						let store = this.$store.state.approvalProcessStore,
+							moneyIndex = store.moneyIndex;
+						this.formData['id'] = ++moneyIndex['index' + store.rootId];
+						this.formData['pid'] = store.empId;
+						this.formData['rootId'] = store.rootId;
+						this.formData['name'] = this.formData['money1'] + ' ~ ' + this.formData['money2'] + '元';
+						this.formData['level'] = 4;
+						this.formData['vercharId'] = store.vercharId;
+						this.formData['dpId'] = store.dpId;
+						this.formData['children'] = [];
+						this.formData['subList'] = [];
+                		this.$store.commit('approvalProcessStore/updateNodes', {level: 4, node: [this.formData]});        //保存后，将当前选中的会计科目节点保存到store里面
+                		this.$store.commit('approvalProcessStore/updateIndex', {index: store.rootId, data: this.formData['id']});			//更新对应的单据金额索引
+						this.close();
                 	}
                 });
 			},

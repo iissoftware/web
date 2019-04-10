@@ -48,23 +48,12 @@ export default {
             activeName: this.$store.state.approvalProcessStore.activeName,
         }
     },
-    methods: {
-        getTreeData() {
-            this.$http.get(this.$url + '/activiti/selectActiviti').then(res => {
-                if(res.data.code == 20001) {
-                    if(res.data.data) {
-                        this.$store.dispatch('approvalProcessStore/getTreeData', res.data.data);
-                    }
-                }
-            });
-        }
-    },
     created() {
         this.$store.commit('approvalProcessStore/updateActiveName', 'first');           //初始化tab为第一个
         this.$store.dispatch('approvalProcessStore/getMemberData', this.$url + 'employee/findEmployeeByDepartment?systemId=' + this.$store.state.systemId + '&id=0');
         this.$nextTick(() => {
             this.$store.dispatch('approvalProcessStore/getTreeData', this.$url + 'activiti/selectBills');
-            // this.$store.dispatch('approvalProcessStore/selectActiviti', this.$url + 'activiti/selectActiviti');
+            this.$store.dispatch('approvalProcessStore/selectActiviti', this.$url + 'activiti/selectActiviti');
         });
     }
 }

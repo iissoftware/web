@@ -49,16 +49,15 @@ export default {
             });
         },
         nodeClick(row) {            //树形结构节点触发
-            let store = this.$store.state.approvalProcessStore,
-                rootId = store.rootId;
+            let store = this.$store.state.approvalProcessStore;
             this.currentNode = {
                 id: row['id'],
-                pid: rootId,
-                rootId: rootId,
                 name: row['name'],
+                pid: store['rootId'],
+                rootId: store['rootId'],
                 level: 1,
-                subList: [],
-                children: []
+                children: [],
+                subList: []
             }
         },
         filterNode(value, data) {       //过滤查询树形节点
@@ -77,18 +76,28 @@ export default {
         },
         save() {            //保存
             if(this.currentNode['id']) {
-                let store = this.$store.state.approvalProcessStore,
-                    allId = store.allId;
+                let store = this.$store.state.approvalProcessStore;
+                this.currentNode['subList'].push(
+                    {id: store.ttId, name: '全部', pid: this.currentNode['id'], rootId: store.rootId, level: 2, parentName: '无', parentId: 0, children: [], subList: [
+                    {id: store.ttId, name: '全部', pid: store.ttId, rootId: store.rootId, level: 3, vercharId: this.currentNode['id'], children: [], subList: [
+                    {id: store.ttId, pid: store.ttId, rootId: store.rootId, level: 4, vercharId: this.currentNode['id'], money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', children: [], subList: []}
+                    ]}
+                ]});
                 let obj = {
-                    id: allId,
-                    pid: this.currentNode['pid'],
-                    level: 1,
-                    rootId: this.currentNode['rootId'],
+                    id: store.ttId,
                     name: '全部',
-                    subList: [{id: allId, name: '全部', pid: allId, rootId: this.currentNode['rootId'], level: 2, parentName: '无', parentId: 0, subList: [{id: allId, name: '全部', pid: allId, rootId: this.currentNode['rootId'], level: 3, subList: [{id: allId, pid: allId, rootId: this.currentNode['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}], children: []}], children: []}],
-                    children: []
+                    pid: store.rootId,
+                    rootId: store.rootId,
+                    level: 1,
+                    children: [],
+                    subList: []
                 }
-                this.currentNode['subList'].push({id: allId, name: '全部', pid: this.currentNode['id'], rootId: this.currentNode['rootId'], level: 2, parentName: '无', parentId: 0, subList: [{id: allId, name: '全部', pid: allId, rootId: this.currentNode['rootId'], level: 3, subList: [{id: allId, pid: allId, rootId: this.currentNode['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}], children: []}], children: []});
+                obj['subList'].push(
+                    {id: store.ttId, name: '全部', pid: obj['id'], rootId: store.rootId, level: 2, parentName: '无', parentId: 0, children: [], subList: [
+                    {id: store.ttId, name: '全部', pid: store.ttId, rootId: store.rootId, level: 3, vercharId: obj['id'], children: [], subList: [
+                    {id: store.ttId, pid: store.ttId, rootId: store.rootId, level: 4, vercharId: obj['id'], money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', children: [], subList: []}
+                    ]}
+                ]});
                 this.$store.commit('approvalProcessStore/updateNodes', {level: 1, node: [obj, this.currentNode]});        //保存后，将当前选中的会计科目节点保存到store里面
                 this.close();
             } else {

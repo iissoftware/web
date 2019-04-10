@@ -82,30 +82,27 @@ export default {
                 name3: [{validator: checkedName3, triggle: 'change'}],
                 nodeType: [{required: true, message: '节点类型不能为空', triggle: 'change'}]
             },
-            arr: this.$store.state.approvalProcessStore.names,
+            arr: [],
             systemId: this.$store.state.systemId,  
         }
     },
     methods: {
-        // getMemberData() {
-        //     this.$http.get(this.$url + 'employee/findEmployeeByDepartment?systemId=' + this.systemId + '&id=0').then(res => {
-        //         if(res.data.code == 20001) {
-        //             if(res.data.data) {
-        //                 res.data.data.forEach(item => item['id'] = item['id'].toString());
-        //                 this.arr = res.data.data;
-        //             }
-        //         }
-        //     })
-        // },
+        getMemberData() {
+            this.$http.get(this.$url + 'employee/findEmployeeByDepartment?systemId=' + this.systemId + '&id=0').then(res => {
+                if(res.data.code == 20001) {
+                    if(res.data.data) {
+                        res.data.data.forEach(item => item['id'] = item['id'].toString());
+                        this.arr = res.data.data;
+                    }
+                }
+            })
+        },
         save(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    let store = this.$store.state.approvalProcessStore,
-                        id = store.nodeId,
-                        rootId = store.rootId,
-                        sIndex = store.sIndex;
+                    let store = this.$store.state.approvalProcessStore;
                     let list = {
-                        id: ++sIndex,
+                        id: ++store.sIndex,
                         name: this.formData['name'],
                         name1: this.formData['name1'],
                         name2: this.formData['name2'],
@@ -113,8 +110,8 @@ export default {
                         nodeType: this.formData['nodeType'],
                         generateDocument: this.formData['generateDocument'],
                         level: 5,
-                        pid: id,
-                        rootId: rootId
+                        pid: store.mnId,
+                        rootId: store.rootId
                     }
                     this.$store.commit('approvalProcessStore/updateNodes', {level: 5, node: [list]});        //保存后，将当前选中的会计科目节点保存到store里面
                     this.$store.commit('approvalProcessStore/updateSIndex', list['id']);        //保存后，更新审核人id
@@ -126,6 +123,11 @@ export default {
             let index = parent.layer.getFrameIndex(window.name);    //先得到当前iframe层的索引
             parent.layer.close(index);
         }
+    },
+    created() {
+        this.$nextTick(() => {
+            this.getMemberData();
+        });
     }
 }
 </script>

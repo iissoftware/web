@@ -2,6 +2,7 @@
     <div class="section">
         <div class="tree-left">
             <div class="tree-left-title">单据列表</div>
+            <!-- <v-tree/> -->
             <el-tree :data="treeData" ref="tree" :accordion="true" :default-expanded-keys="dfExpKeys" node-key="id" :expand-on-click-node="true" :props="defaultProps" :highlight-current="true" @node-click="nodeClick"></el-tree>
         </div>
         <div class="tree-right">
@@ -17,15 +18,10 @@
                 </div>
                 <!-- 表格数据 -->
                 <div class="table">
-                    <el-table :data="tableData" border @selection-change="selectionChange">
+                    <el-table :data="tableData" @selection-change="selectionChange">
                         <el-table-column type="selection" width="60"></el-table-column>
                         <el-table-column type="index" label="序号" width="100"></el-table-column>
                         <el-table-column property="name" label="会计科目"></el-table-column>
-                        <el-table-column label="操作">
-                            <template slot-scope="scope">
-                                <el-button type="text" size="small" v-if="scope.row.name !== '全部'" @click="update(scope.row.id)">修改</el-button>
-                            </template>
-                        </el-table-column>
                     </el-table>
                 </div>
             </div>
@@ -69,9 +65,14 @@ export default {
     },
     methods: {
         nodeClick(row) {
-            row['level'] === 0 ? this.isAdd = true : this.isAdd = false;
-            this.tableData = row['children'];
-            this.$store.commit('approvalProcessStore/updateId', {nodeId: row['id'], rootId: row['rootId']});
+            if(row['level'] == 0) {
+                this.isAdd = true;
+                this.tableData = row['children'];
+                this.$store.commit('approvalProcessStore/updateId', {rootId: row['id']});
+            } else {
+                this.isAdd = false;
+                this.tableData = [];
+            }
         },
         selectionChange(arr) {
             this.multipleSelection = arr;
@@ -89,9 +90,9 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$message({message: '删除成功', duration: 1000, type: 'success'});
+                this.$message({message: '删除成功', duration: 1500, type: 'success'});
                 setTimeout(() => {
-                    this.$store.commit('approvalProcessStore/deleteNodes', this.multipleSelection);
+                    this.$store.commit('approvalProcessStore/deleteNodes', {level: 1, arr: this.multipleSelection});
                 }, 1000);
             }).catch(() => {
                 this.$message({message: '已取消删除', duration: 1000, type: 'info'});
@@ -104,7 +105,7 @@ export default {
 .section {height: 100% !important;}
 .tree-left {
     height: 100%;
-    width: 200px;
+    width: 355px;
     background-color: #fff;
     padding: 15px 0;
     box-sizing: border-box;
@@ -120,7 +121,7 @@ export default {
 .tree-left .el-tree {height: calc(100% - 36px) !important; padding: 10px 0 !important;overflow: auto !important;}
 .tree-right {
     height: 100%;
-    width: calc(100% - 215px);
+    width: calc(100% - 370px);
     overflow: hidden;
     float: right;
     border-radius: 6px !important;

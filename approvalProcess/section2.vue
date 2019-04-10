@@ -1,10 +1,11 @@
 <template>
-    <div class="section section2">
+    <div class="section">
         <div class="tree-left">
             <div class="tree-left-title">单据列表</div>
+            <!-- <v-tree/> -->
             <el-tree :data="treeData" ref="tree" :accordion="true" :default-expanded-keys="dfExpKeys" node-key="id" :expand-on-click-node="true" :props="defaultProps" :highlight-current="true" @node-click="nodeClick"></el-tree>
         </div>
-        <div class="tree-right tree-right2">
+        <div class="tree-right">
             <div class="block-area">
                 <div class="btn-box">
                     <div class="btn-group">
@@ -61,9 +62,8 @@ export default {
             if(newVal[0] === 'second') {
                 this.isAdd = false;
                 let store = this.$store.state.approvalProcessStore,
-                    rootId = store.rootId,
-                    treeData = store.treeData,
-                    allId = store.allId;
+                    treeData = store.treeData;
+                // console.log(store.billList)
                 treeData.forEach(rootItem => {
                     rootItem['children'].forEach(vercharItem => {
                         if(vercharItem['children'].length > 0) {
@@ -77,10 +77,11 @@ export default {
     },
     methods: {
         nodeClick(row) {
-            if(row['level'] === 1) {
+            if(row['level'] == 1) {
                 this.isAdd = true;
                 this.tableData = row['subList'];
-                this.$store.commit('approvalProcessStore/updateId', {nodeId: row['id'], rootId: row['rootId']});
+                //更新根节点id, 会计科目id
+                this.$store.commit('approvalProcessStore/updateId', {rootId: row['rootId'], vercharId: row['id']});
             } else {
                 this.isAdd = false;
                 this.tableData = [];
@@ -102,9 +103,9 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$message({message: '删除成功', duration: 1000, type: 'success'});
+                this.$message({message: '删除成功', duration: 1500, type: 'success'});
                 setTimeout(() => {
-                    this.$store.commit('approvalProcessStore/deleteNodes', this.multipleSelection);
+                    this.$store.commit('approvalProcessStore/deleteNodes', {level: 2, arr: this.multipleSelection});
                 }, 1000);
             }).catch(() => {
                 this.$message({message: '已取消删除', duration: 1000, type: 'info'});
@@ -118,7 +119,7 @@ export default {
 .section {height: 100% !important;}
 .tree-left {
     height: 100%;
-    width: 200px;
+    width: 355px;
     background-color: #fff;
     padding: 15px 0;
     box-sizing: border-box;
@@ -134,7 +135,7 @@ export default {
 .tree-left .el-tree {height: calc(100% - 36px) !important; padding: 10px 0 !important;overflow: auto !important;}
 .tree-right {
     height: 100%;
-    width: calc(100% - 215px);
+    width: calc(100% - 370px);
     overflow: hidden;
     float: right;
     border-radius: 6px !important;

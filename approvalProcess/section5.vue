@@ -78,7 +78,7 @@
 export default {
     data() {
         return {
-            treeData: [],
+            treeData: this.$store.state.approvalProcessStore.treeData,
             tableData: [],
             dfExpKeys: [],
             activeName: this.$store.state.approvalProcessStore.activeName,
@@ -88,7 +88,7 @@ export default {
                 label: 'name',
                 children: 'children'
             },
-            arr: [],
+            arr: this.$store.state.approvalProcessStore.names,          //所有审核人
             systemId: this.$store.state.systemId,
             isAdd: false,
             money1: null,
@@ -103,32 +103,22 @@ export default {
         activeName(newVal) {
             if(newVal[0] === 'five') {
                 this.isAdd = false;
-                let store = this.$store.state.approvalProcessStore,
-                    rootId = store.rootId,
-                    treeData = store.treeData;
-                this.arr = store.names;
+                let treeData = this.$store.state.approvalProcessStore.treeData;
                 treeData.forEach(rootItem => {
                     rootItem['children'].forEach(vercharItem => {
                         if(vercharItem['subList'].length > 0) {
-                            vercharItem['children'].splice(0);
+                            if(vercharItem['children'].length > 0) vercharItem['children'].splice(0);
                             vercharItem['subList'].forEach(dpItem => {
                                 vercharItem['children'].push(dpItem);
-                            });
-                        }
-                        if(vercharItem['children'].length > 0) {
-                            vercharItem['children'].forEach(dpItem => {
                                 if(dpItem['subList'].length > 0) {
                                     dpItem['children'].splice(0);
                                     dpItem['subList'].forEach(empItem => {
                                         dpItem['children'].push(empItem);
-                                    });
-                                }
-                                if(dpItem['children'].length > 0) {
-                                    dpItem['children'].forEach(empItem => {
                                         if(empItem['subList'].length > 0) {
                                             empItem['children'].splice(0);
-                                            empItem['subList'].forEach(moneyItem => {
-                                                empItem['children'].push(moneyItem);
+                                            empItem['subList'].forEach(mnItem => {
+                                                if(mnItem['children'].length > 0) mnItem['children'].splice(0);
+                                                empItem['children'].push(mnItem);
                                             });
                                         }
                                     });
@@ -143,14 +133,33 @@ export default {
     },
     methods: {
         nodeClick(row) {
-            if(row['level'] === 4) {
+            // console.log(row)
+            if(row['level'] == 4) {
                 this.isAdd = true;
                 this.tableData = row['subList'];
+                this.money1 = row['money1'];
+                this.money2 = row['money2'];
+                //更新根节点id, 职员id, 金额id
+                this.$store.commit('approvalProcessStore/updateId', {rootId: row['rootId'], empId: row['pid'], mnId: row['id']});
+                //递归找到部门id
+                this.findDpIdByRow(row, this.treeData);           //通过row属性找到当前所属的会计科目id
             } else {
                 this.isAdd = false;
                 this.tableData = [];
             }
-            this.$store.commit('approvalProcessStore/updateId', {nodeId: row['id'], rootId: row['rootId']});
+        },
+        findDpIdByRow(row, arr) {           //通过row找到对应的部门id
+            let store = this.$store.state.approvalProcessStore;
+            arr.forEach(item => {
+                if(item['rootId'] == row['rootId'] && item['vercharId'] == row['vercharId'] && item['id'] == row['pid'] && item['pid'] == row['dpId'] && item['level'] == 3) {
+                    //更新部门id，会计科目id
+                    this.$store.commit('approvalProcessStore/updateId', {dpId: item['pid'], vercharId: item['vercharId']});
+                } else {
+                    if(item['children'].length > 0) {
+                        this.findDpIdByRow(row, item['children']);
+                    }
+                }
+            });
         },
         selectionChange(arr) {
             this.multipleSelection = arr;
@@ -168,16 +177,56 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$message({message: '删除成功', duration: 1000, type: 'success'});
+                this.$message({message: '删除成功', duration: 1500, type: 'success'});
                 setTimeout(() => {
-                    this.$store.commit('approvalProcessStore/deleteNodes', this.multipleSelection);
+                    this.$store.commit('approvalProcessStore/deleteNodes', {level: 5, arr: this.multipleSelection});
                 }, 1000);
             }).catch(() => {
                 this.$message({message: '已取消删除', duration: 1000, type: 'info'});
             });
         },
         save() {        //保存
-            
+            let store = this.$store.state.approvalProcessStore;
+            let tableData = this.tableData,
+                approvers = [],
+                notifyPeoples = [];
+            tableData.forEach((item, index) => {
+                if(item['nodeType'] == 0) {
+                    console.log(item)
+                    if(item['name'] !== '' && typeof(item['name']) != 'undefined') approvers.push(store['mnId'] + ',' + item['name'] + ',' + (index + 1) + ',' + Number(item['generateDocument']));
+                    if(item['name1'] !== '' && typeof(item['name1']) != 'undefined') approvers.push(store['mnId'] + ',' + item['name1'] + ',' + (index + 1) + ',' + Number(item['generateDocument']));
+                    if(item['name2'] !== '' && typeof(item['name2']) != 'undefined') approvers.push(store['mnId'] + ',' + item['name2'] + ',' + (index + 1) + ',' + Number(item['generateDocument']));
+                    if(item['name3'] !== '' && typeof(item['name3']) != 'undefined') approvers.push(store['mnId'] + ',' + item['name3'] + ',' + (index + 1) + ',' + Number(item['generateDocument']));
+                }
+                if(item['nodeType'] == 1) {
+                    if(item['name'] !== '' && typeof(item['name']) != 'undefined') notifyPeoples.push(store['mnId'] + ',' + item['name'] + ',' + (index + 1) + ',' + Number(item['generateDocument']));
+                    if(item['name1'] !== '' && typeof(item['name1']) != 'undefined') notifyPeoples.push(store['mnId'] + ',' + item['name1'] + ',' + (index + 1) + ',' + Number(item['generateDocument']));
+                    if(item['name2'] !== '' && typeof(item['name2']) != 'undefined') notifyPeoples.push(store['mnId'] + ',' + item['name2'] + ',' + (index + 1) + ',' + Number(item['generateDocument']));
+                    if(item['name3'] !== '' && typeof(item['name3']) != 'undefined') notifyPeoples.push(store['mnId'] + ',' + item['name3'] + ',' + (index + 1) + ',' + Number(item['generateDocument']));
+                }
+            });
+            let obj = {
+                bills: [String(store.rootId)],
+                verchars: [String(store.vercharId)],
+                departments: [String(store.dpId)],
+                employees: [String(store.empId)],
+                amounts: [this.money1 + ',' + this.money2],
+                notifyPeoples: notifyPeoples,
+                approvers: approvers
+            }
+            console.log(obj);
+            var type = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            this.$http.post(this.$url + 'activiti/insertMain', JSON.stringify(obj), type).then(res => {
+                if(res.data.code == 20001) {
+                    this.$message({message: res.data.data || '保存成功', duration: 1500, type: 'success'});
+                } else {
+                    this.$message({message: res.data.msg || '保存失败', duration: 1500, type: 'success'});
+                }
+            });
         }
     }
 }
@@ -187,7 +236,7 @@ export default {
 .section {height: 100% !important;}
 .tree-left {
     height: 100%;
-    width: 200px;
+    width: 355px;
     background-color: #fff;
     padding: 15px 0;
     box-sizing: border-box;
@@ -203,7 +252,7 @@ export default {
 .tree-left .el-tree {height: calc(100% - 36px) !important; padding: 10px 0 !important;overflow: auto !important;}
 .tree-right {
     height: 100%;
-    width: calc(100% - 215px);
+    width: calc(100% - 370px);
     overflow: hidden;
     float: right;
     border-radius: 6px !important;

@@ -60,18 +60,16 @@ export default {
             });
         },
         nodeClick(row) {
-            let nodeId = this.$store.state.approvalProcessStore.nodeId,
-                rootId = this.$store.state.approvalProcessStore.rootId;
+            let store = this.$store.state.approvalProcessStore;
             this.currentNode = {
                 id: row['id'],
                 name: row['name'],
-                parentId: row['parentId'],
-                parentName: '',
-                pid: nodeId,             //分配一个父级id
-                rootId: rootId,      //分配一个根节点
+                pid: store.vercharId,
+                rootId: store.rootId,
                 level: 2,
-                subList: [],
-                children: []
+                parentId: row['parentId'],
+                children: [],
+                subList: []
             }
         },
         filterNode(value, data) {       //过滤查询树形节点
@@ -79,22 +77,30 @@ export default {
             return data.name.indexOf(value) !== -1;
         },
         save() {
-            let store = this.$store.state.approvalProcessStore,
-                allId = store.allId;
+            let store = this.$store.state.approvalProcessStore;
             let obj = {
-                id: allId,
+                id: store.ttId,
                 name: '全部',
-                parentId: 0,
-                parentName: '无',
-                pid: this.currentNode['pid'],
-                rootId: this.currentNode['rootId'],
+                pid: store.vercharId,
+                rootId: store.rootId,
                 level: 2,
-                subList: [{id: allId, pid: allId, name: '全部', rootId: this.currentNode['rootId'], level: 3, subList: [{id: allId, pid: allId, rootId: this.currentNode['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}], children: []}],
-                children: []
+                parentName: '无',
+                parentId: 0,
+                children: [],
+                subList: []
             }
+            obj['subList'].push(
+                {id: store.ttId, name: '全部', pid: store.ttId, rootId: store.rootId, level: 3, vercharId: store.vercharId, dpId: obj['id'], children: [], subList: [
+                {id: store.ttId, pid: store.ttId, rootId: store.rootId, level: 4, vercharId: store.vercharId, dpId: obj['id'], money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', children: [], subList: []}
+                ]
+            });
+            this.currentNode['subList'].push(
+                {id: store.ttId, name: '全部', pid: this.currentNode['id'], rootId: store.rootId, level: 3, vercharId: store.vercharId, dpId: this.currentNode['id'], children: [], subList: [
+                {id: store.ttId, pid: store.ttId, rootId: store.rootId, level: 4, vercharId: store.vercharId, dpId: this.currentNode['id'], money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', children: [], subList: []}
+                ]
+            });
             if(this.currentNode['parentId'] == 0) {         //如果没有上级部门，也就是上级是公司了，那么parentName就是公司名称
                 this.currentNode['parentName'] = this.systemInfo['companyNameChinese'];
-                this.currentNode['subList'].push({id: allId, pid: this.currentNode['id'], name: '全部', rootId: this.currentNode['rootId'], level: 3, subList: [{id: allId, pid: allId, rootId: this.currentNode['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}], children: []});
                 this.$store.commit('approvalProcessStore/updateNodes', {level: 2, node: [obj, this.currentNode]});        //保存后，将当前选中的会计科目节点保存到store里面
                 this.close();
             } else {
@@ -102,8 +108,6 @@ export default {
                     if(res.data.code == 20001) {
                         if(res.data.data) {
                             this.currentNode['parentName'] = res.data.data['name'];
-                            obj['parentId'] = this.currentNode['parentId'];
-                            this.currentNode['subList'].push({id: allId, pid: this.currentNode['id'], name: '全部', rootId: this.currentNode['rootId'], level: 3, subList: [{id: allId, pid: allId, rootId: this.currentNode['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}], children: []});
                             this.$store.commit('approvalProcessStore/updateNodes', {level: 2, node: [obj, this.currentNode]});        //保存后，将当前选中的会计科目节点保存到store里面
                             this.close();
                         }

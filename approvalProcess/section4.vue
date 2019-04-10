@@ -38,7 +38,7 @@
 export default {
     data() {
         return {
-            treeData: this.$store.state.approvalProcessStore.treeData,
+            treeData: [],
             tableData: [],
             dfExpKeys: [],
             activeName: this.$store.state.approvalProcessStore.activeName,
@@ -55,27 +55,22 @@ export default {
         activeName(newVal) {
             if(newVal[0] === 'four') {
                 this.isAdd = false;
-                let store = this.$store.state.approvalProcessStore,
-                    rootId = store.rootId,
-                    treeData = store.treeData,
-                    dp = null;
+                let treeData = this.$store.state.approvalProcessStore.treeData;
                 treeData.forEach(rootItem => {
                     rootItem['children'].forEach(vercharItem => {
-                        vercharItem['children'].splice(0);
-                        vercharItem['subList'].forEach(dpItem => {
-                            vercharItem['children'].push(dpItem);
-                            if(vercharItem['children'].length > 0) {
-                                vercharItem['children'].forEach(dpItem => {
-                                    if(dpItem['subList'].length > 0) {
-                                        dpItem['children'].splice(0);
-                                        dpItem['subList'].forEach(empItem => {
-                                            if(empItem['children'].length > 0) empItem['children'].splice(0);
-                                            dpItem['children'].push(empItem);
-                                        });
-                                    }
-                                });
-                            }
-                        });
+                        if(vercharItem['subList'].length > 0) {
+                            if(vercharItem['children'].length > 0) vercharItem['children'].splice(0);
+                            vercharItem['subList'].forEach(dpItem => {
+                                vercharItem['children'].push(dpItem);
+                                if(dpItem['subList'].length > 0) {
+                                    dpItem['children'].splice(0);
+                                    dpItem['subList'].forEach(empItem => {
+                                        if(empItem['children'].length > 0) empItem['children'].splice(0);
+                                        dpItem['children'].push(empItem);
+                                    });
+                                }
+                            });
+                        }
                     });
                 });
                 this.treeData = [].concat(treeData);
@@ -83,25 +78,30 @@ export default {
         }
     },
     methods: {
-        setAllNode(id, pid, rootId, name, level) {          //设置默认全部节点
-            return {
-                id: id,
-                pid: pid,
-                rootId: rootId,
-                name: name,
-                level: level,
-                subList: [],
-                children: []
-            }
-        },
         nodeClick(row) {
-            if(row['level'] === 3) {
+            if(row['level'] == 3) {
                 this.isAdd = true;
                 this.tableData = row['subList'];
+                //更新根节点id, 部门id, 职员id
+                this.$store.commit('approvalProcessStore/updateId', {rootId: row['rootId'], dpId: row['pid'], empId: row['id']});
+                //递归找到会计科目id
+                this.findVercharIdByRow(row, this.treeData);           //通过row属性找到当前所属的会计科目id
             } else {
                 this.isAdd = false;
                 this.tableData = [];
             }
+        },
+        findVercharIdByRow(row, arr) {          //通过row找到对应的会计科目id
+            arr.forEach(item => {
+                if(item['rootId'] == row['rootId'] && item['id'] == row['vercharId'] && item['level'] == 1) {
+                    //更新会计科目id
+                    this.$store.commit('approvalProcessStore/updateId', {vercharId: item['id']});
+                } else {
+                    if(item['children'].length > 0) {
+                        this.findVercharIdByRow(row, item['children']);
+                    }
+                }
+            });
         },
         selectionChange(arr) {
             this.multipleSelection = arr;
@@ -119,9 +119,9 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$message({message: '删除成功', duration: 1000, type: 'success'});
+                this.$message({message: '删除成功', duration: 1500, type: 'success'});
                 setTimeout(() => {
-                    this.$store.commit('approvalProcessStore/deleteNodes', this.multipleSelection);
+                    this.$store.commit('approvalProcessStore/deleteNodes', {level: 4, arr: this.multipleSelection});
                 }, 1000);
             }).catch(() => {
                 this.$message({message: '已取消删除', duration: 1000, type: 'info'});
@@ -135,7 +135,7 @@ export default {
 .section {height: 100% !important;}
 .tree-left {
     height: 100%;
-    width: 200px;
+    width: 355px;
     background-color: #fff;
     padding: 15px 0;
     box-sizing: border-box;
@@ -151,7 +151,7 @@ export default {
 .tree-left .el-tree {height: calc(100% - 36px) !important; padding: 10px 0 !important;overflow: auto !important;}
 .tree-right {
     height: 100%;
-    width: calc(100% - 215px);
+    width: calc(100% - 370px);
     overflow: hidden;
     float: right;
     border-radius: 6px !important;

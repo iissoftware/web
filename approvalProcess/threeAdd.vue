@@ -29,9 +29,9 @@ export default {
     },
     methods: {
         getData() {
-            let store = this.$store.state.approvalProcessStore;
-            let id = store.nodeId;     //拿到部门父级id
-            id = id === store.allId ? 0 : id;
+            let store = this.$store.state.approvalProcessStore,
+                id = store.dpId;        //拿到部门id
+            id = id === store.ttId ? 0 : id;
             this.$http.get(this.$url + 'employee/findEmployeeByDepartment?systemId=' + this.systemId + '&id=' + id).then(res => {
                 if(res.data.code == 20001) {
                     if(res.data.data) {
@@ -41,29 +41,33 @@ export default {
             });
         },
         rowDBClick(row) {
-            let store = this.$store.state.approvalProcessStore,
-                id = store.nodeId,
-                rootId = store.rootId,
-                allId = store.allId;
+            let store = this.$store.state.approvalProcessStore;
             let list = {
                 id: row['id'],
                 name: row['name'],
-                pid: id,
-                rootId: rootId,
+                pid: store.dpId,
+                dpId: store.dpId,
+                rootId: store.rootId,
                 level: 3,
-                subList: [{id: allId, pid: row['id'], rootId: row['rootId'], level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}],
-                children: []
+                vercharId: store.vercharId,
+                children: [],
+                subList: []
             }
             let obj = {
-                id: allId,
+                id: store.ttId,
                 name: '全部',
-                pid: id,
-                rootId: rootId,
+                pid: store.dpId,
+                dpId: store.dpId,
+                rootId: store.rootId,
                 level: 3,
-                subList: [{id: allId, pid: allId, rootId: rootId, level: 4, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', subList: [], children: []}],
-                children: []
+                vercharId: store.vercharId,
+                children: [],
+                subList: []
             }
+            list['subList'].push({id: store.ttId, pid: list['id'], rootId: store.rootId, level: 4, dpId: store.dpId, vercharId: store.vercharId, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', children: [], subList: []});
+            obj['subList'].push({id: store.ttId, pid: store.ttId, rootId: store.rootId, level: 4, vercharId: store.vercharId, dpId: store.dpId, money1: store.minMoney, money2: store.maxMoney, name: store.minMoney + ' ~ ' + store.maxMoney + '元', children: [], subList: []});
             this.$store.commit('approvalProcessStore/updateNodes', {level: 3, node: [obj, list]});        //保存后，将当前选中的会计科目节点保存到store里面
+            this.close();
         },
         close() {
             let index = parent.layer.getFrameIndex(window.name);    //先得到当前iframe层的索引
