@@ -1,11 +1,9 @@
 import Axios from "axios";
 import { Store } from "vuex";
-import Vue from 'vue'
 
 const state = {
     treeData: [],
     activeName: ['first'],
-    fullscreenLoading: [true],
     names: [],      //存储后台返回的所有审核人
     ttId: 99999999,         //全部id
     moneyIndex: {           //各个单据金额id
@@ -24,15 +22,12 @@ const state = {
     dpId: null,             //部门id
     empId: null,            //职员id
     mnId: null,             //金额id
-    billList: [],       //单据数据   
+    billList: [],       //单据数据       
 }
 
 const mutations = {
     updateActiveName(state, names) {
         state.activeName.splice(0, 1, names);
-    },
-    closeFullLoading(state) {
-        state.fullscreenLoading.splice(0, 1, false);
     },
     updateId(state, obj) {
         if(obj['rootId'] !== '' && obj['rootId'] != null && obj['rootId'] != undefined) state.rootId = obj['rootId'];
@@ -97,21 +92,11 @@ const mutations = {
                                 if(item['id'] == item2['pid'] && item['pid'] == state.dpId && item['vercharId'] == state.vercharId) {    //父级id,部门id, 会计科目id,必须相同，防止影响到其它节点
                                     let flag = true;
                                     item['subList'].forEach(item3 => {
-                                        if((item2['money1'] == state.minMoney && item2['money2'] == state.maxMoney)) {      //排除添加0 - 5000000
-                                            flag = false;
-                                            return false;
-                                        } else {
-                                            if(item3['id'] != state.ttId) {
-                                                if((item2['money1'] > Number(item3['money1']) || item2['money2'] > Number(item3['money1'])) && (item2['money1'] <= Number(item3['money2']) || item2['money2'] <= Number(item3['money2']))) {
-                                                    flag = false;
-                                                    return false;
-                                                }
-                                            }
-                                        }
+                                        if(item3['id'] == item2['id'] || (item3['money1'] == item2['money1'] && item3['money2'] == item2['money2']))
+                                        flag = false;
+                                        return false;
                                     });
-                                    if(flag) {
-                                        item['subList'].push(item2);
-                                    }
+                                    if(flag) item['subList'].push(item2);
                                 }
                                 break;
                             case 5:
@@ -189,12 +174,52 @@ const mutations = {
                 this.commit('approvalProcessStore/recursionDeleteNodes', {data: item['children'], node});
             }
         });
+    },
+    concatVerchars(state, params) {          //设置会计科目
+        let flag = true,
+            item = params['item'],
+            rootItem = params['rootItem'];
+        item['verchars'].forEach(vercharItem => {
+            rootItem['children'].forEach(vchItem => {           //去除重复数据
+                if(vercharItem['id'] == vchItem['id']) {
+                    flag = false;
+                    return false;
+                }
+            });
+            if(flag) {      //构造会计科目数据
+                vercharItem['pid'] = rootItem['id'];
+                vercharItem['rootId'] = rootItem['id'];
+                vercharItem['level'] = 1;
+                vercharItem['children'] = [];
+                vercharItem['subList'] = [
+                    {id: state.ttId, name: '全部', pid: vercharItem['id'], rootId: rootItem['rootId'], level: 2, parentName: '无', parentId: 0, children: [], subList: [
+                    {id: state.ttId, name: '全部', pid: state.ttId, rootId: rootItem['rootId'], level: 3, vercharId: vercharItem['id'], children: [], subList: [
+                    {id: state.ttId, pid: state.ttId, rootId: rootItem['rootId'], level: 4, vercharId: vercharItem['id'], money1: state.minMoney, money2: state.maxMoney, name: state.minMoney + ' ~ ' + state.maxMoney + '元', children: [], subList: []}
+                    ]
+                }]}];
+                rootItem['children'].push(vercharItem);
+            }
+            this.commit('approvalProcessStore/concatDepartments', {item: item, arr: rootItem['children']});
+        });
+    },
+    concatDepartments(state, params) {        //设置部门
+        let item = params['item'],
+            data = params['arr'],
+            flag = true;
+        item['departments'].forEach(dpItem => {
+            data.forEach(vercharItem => {
+                if(dpItem['id'] != state.ttId) {
+                    console.log(dpItem)
+                }
+                // vercharItem['subList'].push(dpItem);
+            });
+        });
     }
 }
 
 const actions = {
-    getTreeData({state, dispatch}, $url) {            //获取单据树形列表
-        Axios.get($url + 'activiti/selectBills').then(res => {
+    getTreeData({state}, $url) {            //获取单据树形列表
+        Axios.get($url).then(res => {
             if(res.data.code == 20001) {
                 if(res.data.data) {
                     let data = res.data.data,
@@ -222,7 +247,6 @@ const actions = {
                         }
                         treeData.push(rootItem);
                     });
-                    dispatch('selectActiviti', $url + 'activiti/selectActiviti');
                 }
             }
         });
@@ -245,8 +269,7 @@ const actions = {
         Axios.get($url).then(res => {
             if(res.data.code == 20001) {
                 if(res.data.data) {
-                    commit('closeFullLoading');             //关闭加载动画
-                    state.billList = res.data.data;
+                    
                     //去除数组重复对象
                     var deleteRepeatObj = (arr) => {
                         var uniques = [],
@@ -315,7 +338,6 @@ const actions = {
                         rowIndex = null,        //最大行数
                         tableData = {},
                         moneyArr = [];
-
                     data.forEach(item => {
                         root.push(treeData[item['bills'][0] && item['bills'][0]['id']]);
                         //组装会计科目数据

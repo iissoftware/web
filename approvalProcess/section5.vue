@@ -93,7 +93,8 @@ export default {
             isAdd: false,
             money1: null,
             money2: null,
-            rowIndex: 0            //行号
+            rowIndex: 0,            //行号
+            id: null
         }
     },
     watch: {
@@ -133,7 +134,6 @@ export default {
     },
     methods: {
         nodeClick(row) {
-            // console.log(row)
             if(row['level'] == 4) {
                 this.isAdd = true;
                 this.tableData = row['subList'];
@@ -143,6 +143,8 @@ export default {
                 this.$store.commit('approvalProcessStore/updateId', {rootId: row['rootId'], empId: row['pid'], mnId: row['id']});
                 //递归找到部门id
                 this.findDpIdByRow(row, this.treeData);           //通过row属性找到当前所属的会计科目id
+                //找到是不是同一条审批流程，是的话就加上id一起提交，作为修改。否则就是新增
+                this.isCommonRoad(row);
             } else {
                 this.isAdd = false;
                 this.tableData = [];
@@ -158,6 +160,16 @@ export default {
                     if(item['children'].length > 0) {
                         this.findDpIdByRow(row, item['children']);
                     }
+                }
+            });
+        },
+        isCommonRoad(row) {
+            let billList = this.$store.state.approvalProcessStore.billList;
+            billList.forEach(item => {
+                if(row['rootId'] == item['bills'][0]['id'] && row['vercharId'] == item['verchars'][0]['id'] && row['dpId'] == item['departments'][0]['id'] && row['pid'] == item['employees'][0]['id'] && row['id'] == item['moneys'][0]['id']) {
+                    this.id = item['id'];
+                } else {
+                    this.id = null;
                 }
             });
         },
@@ -192,7 +204,6 @@ export default {
                 notifyPeoples = [];
             tableData.forEach((item, index) => {
                 if(item['nodeType'] == 0) {
-                    console.log(item)
                     if(item['name'] !== '' && typeof(item['name']) != 'undefined') approvers.push(store['mnId'] + ',' + item['name'] + ',' + (index + 1) + ',' + Number(item['generateDocument']));
                     if(item['name1'] !== '' && typeof(item['name1']) != 'undefined') approvers.push(store['mnId'] + ',' + item['name1'] + ',' + (index + 1) + ',' + Number(item['generateDocument']));
                     if(item['name2'] !== '' && typeof(item['name2']) != 'undefined') approvers.push(store['mnId'] + ',' + item['name2'] + ',' + (index + 1) + ',' + Number(item['generateDocument']));
@@ -214,7 +225,7 @@ export default {
                 notifyPeoples: notifyPeoples,
                 approvers: approvers
             }
-            console.log(obj);
+            if(this.id) obj['id'] = this.id;            //如果走的是同一条流程，那么就加上id，作为修改
             var type = {
                 headers: {
                     'Content-Type': 'application/json'

@@ -1,5 +1,5 @@
 <template>
-    <div class="threeAdd">
+    <div class="threeAdd" element-loading-spinner="el-icon-loading" element-loading-text="数据加载中..." element-loading-background="#fff" v-loading.fullscreen.lock="fullLoading">
         <div class="block-area">
             <div class="table">
                 <el-table :data="tableData" border style="width: 100%" @row-dblclick="rowDBClick">
@@ -23,6 +23,7 @@
 export default {
     data() {
         return {
+            fullLoading: true,
             tableData: [],
             systemId: this.$store.state.systemId
         }
@@ -34,6 +35,7 @@ export default {
             id = id === store.ttId ? 0 : id;
             this.$http.get(this.$url + 'employee/findEmployeeByDepartment?systemId=' + this.systemId + '&id=' + id).then(res => {
                 if(res.data.code == 20001) {
+                    this.fullLoading = false;
                     if(res.data.data) {
                         this.tableData = res.data.data;
                     }

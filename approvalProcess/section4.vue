@@ -80,6 +80,7 @@ export default {
     methods: {
         nodeClick(row) {
             if(row['level'] == 3) {
+                console.log(row)
                 this.isAdd = true;
                 this.tableData = row['subList'];
                 //更新根节点id, 部门id, 职员id

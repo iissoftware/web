@@ -1,6 +1,6 @@
 <template>
     <div class="approvalProcess">
-        <el-tabs v-model="activeName[0]">
+        <el-tabs v-model="activeName[0]" element-loading-text="数据加载中..." element-loading-background="#fff" v-loading.fullscreen.lock="fullscreenLoading[0]">
             <el-tab-pane label="会计科目" name="first">
                 <v-section-1/>
             </el-tab-pane>
@@ -46,15 +46,14 @@ export default {
     data() {
         return {
             activeName: this.$store.state.approvalProcessStore.activeName,
+            fullscreenLoading: this.$store.state.approvalProcessStore.fullscreenLoading
         }
     },
     created() {
         this.$store.commit('approvalProcessStore/updateActiveName', 'first');           //初始化tab为第一个
         this.$store.dispatch('approvalProcessStore/getMemberData', this.$url + 'employee/findEmployeeByDepartment?systemId=' + this.$store.state.systemId + '&id=0');
-        this.$nextTick(() => {
-            this.$store.dispatch('approvalProcessStore/getTreeData', this.$url + 'activiti/selectBills');
-            this.$store.dispatch('approvalProcessStore/selectActiviti', this.$url + 'activiti/selectActiviti');
-        });
+        this.$store.dispatch('approvalProcessStore/getTreeData', this.$url);
+        // this.$store.dispatch('approvalProcessStore/selectActiviti', this.$url + 'activiti/selectActiviti');
     }
 }
 </script>

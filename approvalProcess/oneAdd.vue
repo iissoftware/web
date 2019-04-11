@@ -1,5 +1,5 @@
 <template>
-    <div class="approvalProcessDiv">
+    <div class="approvalProcessDiv" element-loading-spinner="el-icon-loading" element-loading-text="数据加载中..." element-loading-background="#fff" v-loading.fullscreen.lock="fullLoading">
         <el-input v-model="filterText" placeholder="输入关键字"></el-input>
         <div class="treebox">
             <el-tree class="filter-tree" ref="tree" :data="treeData" node-key="id" :default-expanded-keys="dfExpKeys" :props="defaultProps" @node-click="nodeClick" :filter-node-method="filterNode"></el-tree>
@@ -25,6 +25,7 @@ export default {
     },
     data() {
         return {
+            fullLoading: true,
             treeData: [],
             filterText: '',
             dfExpKeys: [1],
@@ -44,6 +45,7 @@ export default {
                         this.treeData = res.data.data;
                         this.setTreeDataNo(this.treeData);
                         this.dfExpKeys = [this.treeData[0]['id']];          //默认高亮展开第0个节点
+                        this.fullLoading = false;
                     }
                 }
             });
